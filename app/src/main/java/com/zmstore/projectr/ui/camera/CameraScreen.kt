@@ -107,15 +107,23 @@ fun CameraScreen(
                                                     }
                                                     .sortedByDescending { it.boundingBox?.height() ?: 0 }
                                                 
-                                                val bestMatch = candidates.firstOrNull()?.text?.trim() ?: ""
-                                                if (bestMatch.isNotBlank()) {
-                                                    if (bestMatch == lastCandidate) {
+                                                val bestName = candidates.firstOrNull()?.text?.trim() ?: ""
+                                                val dosageCandidate = allLines.find { it.text.contains(Regex("\\d+\\s*(mg|ml|g|mcg|UI)", RegexOption.IGNORE_CASE)) }?.text?.trim() ?: ""
+
+                                                val fullMatch = if (dosageCandidate.isNotBlank() && bestName.isNotBlank() && !bestName.contains(dosageCandidate)) {
+                                                    "$bestName $dosageCandidate"
+                                                } else {
+                                                    bestName
+                                                }
+
+                                                if (fullMatch.isNotBlank()) {
+                                                    if (fullMatch == lastCandidate) {
                                                         recognitionCount++
                                                         if (recognitionCount >= 5) { // Stabilized
-                                                            detectedText = bestMatch
+                                                            detectedText = fullMatch
                                                         }
                                                     } else {
-                                                        lastCandidate = bestMatch
+                                                        lastCandidate = fullMatch
                                                         recognitionCount = 1
                                                     }
                                                 }
@@ -163,6 +171,18 @@ fun CameraScreen(
                 }
         )
 
+        // Scanning Animation
+        val infiniteTransition = rememberInfiniteTransition(label = "scanning")
+        val scanAnim by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(2000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "scanLine"
+        )
+
         // Visual Overlay (Scanning Frame)
         Canvas(modifier = Modifier.fillMaxSize()) {
             val frameWidth = size.width * 0.85f
@@ -185,10 +205,23 @@ fun CameraScreen(
             
             // Draw frame border with a neon effect
             drawRect(
-                color = MedicleanTeal,
+                brush = Brush.linearGradient(
+                    colors = listOf(MedicleanTeal, MedicleanTeal.copy(alpha = 0.5f), MedicleanTeal)
+                ),
                 topLeft = Offset(left, top),
                 size = Size(frameWidth, frameHeight),
                 style = Stroke(width = 3.dp.toPx())
+            )
+
+            // Scanning Line
+            val scanLineY = top + (frameHeight * scanAnim)
+            drawLine(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color.Transparent, MedicleanTeal, Color.Transparent)
+                ),
+                start = Offset(left, scanLineY),
+                end = Offset(left + frameWidth, scanLineY),
+                strokeWidth = 2.dp.toPx()
             )
             
             // Corners accents
@@ -196,20 +229,20 @@ fun CameraScreen(
             val strokeWidth = 6.dp.toPx()
             
             // Top-left
-            drawLine(Teal80, Offset(left, top), Offset(left + cornerSize, top), strokeWidth)
-            drawLine(Teal80, Offset(left, top), Offset(left, top + cornerSize), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left, top), Offset(left + cornerSize, top), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left, top), Offset(left, top + cornerSize), strokeWidth)
             
             // Top-right
-            drawLine(Teal80, Offset(left + frameWidth, top), Offset(left + frameWidth - cornerSize, top), strokeWidth)
-            drawLine(Teal80, Offset(left + frameWidth, top), Offset(left + frameWidth, top + cornerSize), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left + frameWidth, top), Offset(left + frameWidth - cornerSize, top), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left + frameWidth, top), Offset(left + frameWidth, top + cornerSize), strokeWidth)
             
             // Bottom-left
-            drawLine(Teal80, Offset(left, top + frameHeight), Offset(left + cornerSize, top + frameHeight), strokeWidth)
-            drawLine(Teal80, Offset(left, top + frameHeight), Offset(left, top + frameHeight - cornerSize), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left, top + frameHeight), Offset(left + cornerSize, top + frameHeight), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left, top + frameHeight), Offset(left, top + frameHeight - cornerSize), strokeWidth)
             
             // Bottom-right
-            drawLine(Teal80, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth - cornerSize, top + frameHeight), strokeWidth)
-            drawLine(Teal80, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth, top + frameHeight - cornerSize), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth - cornerSize, top + frameHeight), strokeWidth)
+            drawLine(MedicleanTeal, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth, top + frameHeight - cornerSize), strokeWidth)
         }
 
         // Overlay UI

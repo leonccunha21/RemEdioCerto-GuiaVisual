@@ -107,7 +107,7 @@ fun MedicationDetailScreen(
         }
     }
 
-    LaunchedEffect(medicationId) {
+    LaunchedEffect(medicationId, medicationName) {
         if (medicationId != -1) {
             val med = viewModel.getMedicationById(medicationId)
             med?.let {
@@ -127,6 +127,16 @@ fun MedicationDetailScreen(
                 lastTakenTimestamp = it.lastTakenTimestamp
                 iconType = it.iconType
                 iconColor = it.iconColor
+            }
+        } else if (medicationName != null && medicationName != "null") {
+            // Intelligent processing of OCR result: Name Dosage
+            val dosageRegex = Regex("\\d+\\s*(mg|ml|g|mcg|UI)", RegexOption.IGNORE_CASE)
+            val match = dosageRegex.find(medicationName)
+            if (match != null) {
+                dosage = match.value
+                name = medicationName.replace(match.value, "").trim()
+            } else {
+                name = medicationName
             }
         }
     }

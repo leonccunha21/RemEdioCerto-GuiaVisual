@@ -7,6 +7,7 @@
 *   **🔒 Proteção Biométrica** (Abril 2026): Suporte a desbloqueio via digital/face ao abrir o aplicativo.
 *   **💊 Visual Pills Customizer** (Abril 2026): Personalização de ícones (formato e cor) para identificação visual rápida.
 *   **📅 Exportação de Relatório Médico** (Abril 2026): Geração de PDF profissional com histórico de doses para envio a médicos.
+*   **📷 OCR Inteligente** (Abril 2026): Captura de nome e miligramagem via câmera com animação de scanner em tempo real.
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
@@ -14,7 +15,6 @@
 *   **🌓 Refinamento de Tema Escuro**: Ajustar o `Dark Mode` para usar tons de cinza azulado profundo em vez de preto puro.
 
 #### 🧠 Inteligência e Automação (IA & Android)
-*   **📷 OCR Inteligente**: Melhorar a captura de câmera para sugerir automaticamente o nome e a miligramagem do medicamento ao tirar foto da caixa.
 *   **🎙️ Registro por Voz**: Adicionar um comando rápido "Registrar Dose" via voz para confirmação mãos-livres.
 
 #### ⚙️ Funcionalidades Avançadas & Robustez
