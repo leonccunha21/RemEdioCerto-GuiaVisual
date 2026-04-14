@@ -26,17 +26,8 @@ fun AlarmManagementScreen(
     val medications by viewModel.medications.collectAsState()
 
     Scaffold(
-        containerColor = Color.Transparent,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    if (isSystemInDarkTheme())
-                        listOf(Color(0xFF0F1716), Color(0xFF17201F))
-                    else
-                        listOf(MedicleanWhite, MedicleanMint)
-                )
-            ),
+        containerColor = Color.White,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { 
@@ -60,7 +51,7 @@ fun AlarmManagementScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanTeal)
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White)
             )
         }
     ) { padding ->
@@ -81,10 +72,10 @@ fun AlarmManagementScreen(
                 items(medications) { med ->
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(26.dp),
-                        color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanWhite,
-                        shadowElevation = 4.dp,
-                        border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.05f))
+                        shape = RoundedCornerShape(20.dp),
+                        color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+                        shadowElevation = 2.dp,
+                        border = BorderStroke(1.dp, Color(0xFFE8ECEB))
                     ) {
                         Row(
                             modifier = Modifier

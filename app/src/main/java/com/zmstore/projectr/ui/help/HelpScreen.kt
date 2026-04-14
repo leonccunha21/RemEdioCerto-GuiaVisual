@@ -23,17 +23,8 @@ import com.zmstore.projectr.ui.theme.*
 @Composable
 fun HelpScreen(onBack: () -> Unit) {
     Scaffold(
-        containerColor = Color.Transparent,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    if (isSystemInDarkTheme())
-                        listOf(Color(0xFF0F1716), Color(0xFF17201F))
-                    else
-                        listOf(MedicleanWhite, MedicleanMint)
-                )
-            ),
+        containerColor = Color.White,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { 
@@ -43,7 +34,7 @@ fun HelpScreen(onBack: () -> Unit) {
                         color = MedicleanDarkGreen
                     ) 
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White),
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,

@@ -194,17 +194,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(scaffoldPadding)
-                .background(
-                    if (isSystemInDarkTheme()) {
-                        Brush.verticalGradient(
-                            listOf(MaterialTheme.colorScheme.background, Color(0xFF1A1A1A))
-                        )
-                    } else {
-                        Brush.verticalGradient(
-                            listOf(MedicleanMint, MedicleanSoftGray)
-                        )
-                    }
-                )
+                .background(Color.White)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 val adherence by viewModel.todaysAdherence.collectAsState()
@@ -306,11 +296,11 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        shape = RoundedCornerShape(32.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanWhite
+            containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanTeal
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             // Background organic shape decoration
@@ -331,7 +321,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Surface(
-                        color = MedicleanTeal.copy(alpha = 0.1f),
+                        color = Color.White.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
@@ -339,7 +329,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Black,
-                            color = MedicleanTeal,
+                            color = Color.White,
                             letterSpacing = 1.sp
                         )
                     }
@@ -348,12 +338,12 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
                         text = "$taken de $total",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Black,
-                        color = MedicleanDarkGreen
+                        color = Color.White
                     )
                     Text(
                         text = "doses concluídas",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MedicleanDarkGreen.copy(alpha = 0.6f),
+                        color = Color.White.copy(alpha = 0.8f),
                         fontWeight = FontWeight.Bold
                     )
                     
@@ -382,7 +372,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
                     CircularProgressIndicator(
                         progress = { 1f },
                         modifier = Modifier.fillMaxSize(),
-                        color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.Black.copy(alpha = 0.05f),
+                        color = Color.White.copy(alpha = 0.2f),
                         strokeWidth = 14.dp,
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )
@@ -390,7 +380,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
                     CircularProgressIndicator(
                         progress = { progress },
                         modifier = Modifier.fillMaxSize(),
-                        color = MedicleanTeal,
+                        color = Color.White,
                         strokeWidth = 14.dp,
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )
@@ -399,7 +389,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
                             text = "$percentage%",
                             style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
                             fontWeight = FontWeight.Black,
-                            color = MedicleanTeal
+                            color = Color.White
                         )
                     }
                 }
@@ -583,11 +573,12 @@ fun MedicationCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onEdit(medication) },
-            shape = RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanWhite
+                containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            border = if (isSystemInDarkTheme()) null else BorderStroke(1.dp, Color(0xFFE8ECEB))
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(
