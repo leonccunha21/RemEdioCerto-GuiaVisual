@@ -313,6 +313,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Tenta confirmar uma dose baseada em um comando de voz.
+     */
+    fun confirmDoseByVoice(spokenText: String, onResult: (String, Boolean) -> Unit) {
+        viewModelScope.launch {
+            val meds = medications.value.filter { it.isActive }
+            // Busca simplificada: verifica se o nome do remédio está contido no texto falado
+            val match = meds.find { spokenText.contains(it.name, ignoreCase = true) }
+            
+            if (match != null) {
+                confirmDose(match.id, match.name, "Confirmado via voz")
+                onResult("${match.name} confirmado!", true)
+            } else {
+                onResult("Não entendi '$spokenText'. Tente dizer apenas o nome do remédio.", false)
+            }
+        }
+    }
+
     fun fetchMedicationInfo(medicationName: String) {
         val apiKey = userPreferences.value.geminiApiKey
         if (apiKey.isBlank()) return

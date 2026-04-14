@@ -52,6 +52,21 @@ fun HomeScreen(
     var confirmationNote by remember { mutableStateOf("") }
     var showProfileMenu by remember { mutableStateOf(false) }
 
+    val speechRecognizerLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val spokenText = result.data?.getStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS)?.get(0) ?: ""
+            if (spokenText.isNotBlank()) {
+                viewModel.confirmDoseByVoice(spokenText) { message, success ->
+                    scope.launch {
+                        snackbarHostState.showSnackbar(message)
+                    }
+                }
+            }
+        }
+    }
+
     if (medicationToConfirm != null) {
         AlertDialog(
             onDismissRequest = { medicationToConfirm = null; confirmationNote = "" },
@@ -148,7 +163,21 @@ fun HomeScreen(
                     onProfileClick = { showProfileMenu = true }
                 )
 
-                HealthDashboard(adherence = adherence)
+                HealthDashboard(
+                    adherence = adherence,
+                    onVoiceClick = {
+                        val intent = android.content.Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                            putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                            putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, "pt-BR")
+                            putExtra(android.speech.RecognizerIntent.EXTRA_PROMPT, "Diga o nome do remédio que você tomou")
+                        }
+                        try {
+                            speechRecognizerLauncher.launch(intent)
+                        } catch (e: Exception) {
+                            scope.launch { snackbarHostState.showSnackbar("Reconhecimento de voz não disponível") }
+                        }
+                    }
+                )
 
                 HomeSearchSection(
                     searchQuery = searchQuery,
@@ -216,7 +245,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HealthDashboard(adherence: Pair<Int, Int>) {
+fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
     val (taken, total) = adherence
     val progress = if (total > 0) taken.toFloat() / total else 0f
     val percentage = (progress * 100).toInt()
@@ -282,7 +311,23 @@ fun HealthDashboard(adherence: Pair<Int, Int>) {
                     text = "$percentage%",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Black,
-                    color = MedicleanDarkGreen
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Botão de Voz
+            IconButton(
+                onClick = onVoiceClick,
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(MedicleanTeal.copy(alpha = 0.1f), CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Mic,
+                    contentDescription = "Confirmar por voz",
+                    tint = MedicleanTeal
                 )
             }
         }

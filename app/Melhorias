@@ -9,11 +9,9 @@
 *   **📅 Exportação de Relatório Médico** (Abril 2026): Geração de PDF profissional com histórico de doses para envio a médicos.
 *   **📷 OCR Inteligente** (Abril 2026): Captura de nome e miligramagem via câmera com animação de scanner em tempo real.
 *   **🌓 Refinamento de Tema Escuro** (Abril 2026): Implementada paleta 'Deep Teal-Grey' premium, reduzindo o cansaço visual e tornando o app mais elegante.
+*   **🎙️ Registro por Voz** (Abril 2026): Confirmação de dose mãos-livres via comando de voz (botão de microfone no Dashboard).
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
-
-#### 🎨 Experiência do Usuário (UI/UX Premium)
-*   **🎙️ Registro por Voz**: Adicionar um comando rápido "Registrar Dose" via voz para confirmação mãos-livres.
 
 #### ⚙️ Funcionalidades Avançadas & Robustez
 *   **📶 Sincronização em Nuvem (Multi-dispositivo)**: Implementar Firebase para que cuidadores e familiares compartilhem o status das doses.
