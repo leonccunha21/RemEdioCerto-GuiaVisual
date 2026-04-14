@@ -1,0 +1,22 @@
+DIRETRIZES DE IMPLEMENTAÇÃO / IMPLEMENTATION GUIDELINES
+
+🇧🇷 Versão em Português (PT-BR)
+🏗️ Desenvolvimento e Persistência
+Persistência Reativa: Sempre salvar no banco de dados (Room/SQLite) ao realizar mudanças de estado. Nunca confiar apenas na memória RAM.
+Segurança de Dados: Proibido o uso de dados hardcoded (IDs de AdMob, URLs, Chaves de API). Utilize BuildConfig ou strings.xml.
+Tratamento de Exceções: Todo input de usuário ou chamada externa deve estar dentro de um bloco try-catch para evitar crashes.
+
+🧪 Qualidade (QA) e Build
+QA & Debugging: Validar o fluxo completo e verificar o Logcat em busca de erros silenciosos antes de finalizar.
+Build Integrity: Realizar obrigatoriamente um Clean & Rebuild e testar o APK/Bundle final.
+Teste de Regressão: Garantir que novas funcionalidades não quebrem o que já estava funcionando.
+
+📦 Versionamento e Git
+Versionamento Semântico: * Atualização Grande: Incrementar versionCode E versionName.
+Atualização Pequena: Incrementar apenas o versionName.
+Fluxo Git: Commitar obrigatoriamente antes de mudanças grandes ou refatorações.
+Log de Melhorias: Ao finalizar, listar o que foi feito com o marcador oficial:
+
+✅ [Descrição da melhoria realizada]
+
+

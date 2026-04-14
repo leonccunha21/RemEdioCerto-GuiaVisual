@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "628288864637",
+    "firebase_url": "https://zm-remedio-certo-guia-visual-default-rtdb.firebaseio.com",
+    "project_id": "zm-remedio-certo-guia-visual",
+    "storage_bucket": "zm-remedio-certo-guia-visual.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628288864637:android:1436a054fb328e4a03cc14",
+        "android_client_info": {
+          "package_name": "com.zmstore.projectr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628288864637-0fbbeu1fm3r6eu9prp7gsimn9k62pp87.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zmstore.projectr",
+            "certificate_hash": "812590c2e5a0d23dd4c6274896557866df24219a"
+          }
+        },
+        {
+          "client_id": "628288864637-vo154qetl7jvmviop54kus3ut2r6nc5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zmstore.projectr",
+            "certificate_hash": "5ef138e1fd4202ff3b719b6c51d0d6a7f46b90e5"
+          }
+        },
+        {
+          "client_id": "628288864637-vg10ukdnfke20fva6hlntf10i7vfe2j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATRUOj8h1DI49Zv0qxTLl9fe8AkB5FaSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628288864637-vg10ukdnfke20fva6hlntf10i7vfe2j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
