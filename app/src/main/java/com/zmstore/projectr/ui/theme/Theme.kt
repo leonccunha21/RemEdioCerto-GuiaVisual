@@ -16,13 +16,15 @@ private val DarkColorScheme = darkColorScheme(
     primary = MedicleanTeal,
     secondary = MedicleanMint,
     tertiary = MedicleanGold,
-    background = Color(0xFF0F1A18),
-    surface = Color(0xFF1B2B28),
+    background = Color(0xFF0B1211), // Deep Teal-Grey
+    surface = Color(0xFF141D1B),    // Slightly lighter surface
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onTertiary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White
+    onBackground = Color(0xFFE0E0E0),
+    onSurface = Color(0xFFE0E0E0),
+    surfaceVariant = Color(0xFF1C2B28),
+    onSurfaceVariant = Color(0xFF8FA39F)
 )
 
 private val LightColorScheme = lightColorScheme(

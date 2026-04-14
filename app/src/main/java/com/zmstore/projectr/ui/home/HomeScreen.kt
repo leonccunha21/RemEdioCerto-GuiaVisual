@@ -128,9 +128,15 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(scaffoldPadding)
                 .background(
-                    Brush.verticalGradient(
-                        colors = listOf(MedicleanWhite, MedicleanMint)
-                    )
+                    if (isSystemInDarkTheme()) {
+                        Brush.verticalGradient(
+                            listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        )
+                    } else {
+                        Brush.verticalGradient(
+                            listOf(MedicleanWhite, MedicleanMint)
+                        )
+                    }
                 )
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -220,7 +226,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>) {
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -410,8 +416,8 @@ fun HomeSearchSection(
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MedicleanTeal,
                         selectedLabelColor = Color.White,
-                        containerColor = Color.White,
-                        labelColor = MedicleanDarkGreen
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        labelColor = MaterialTheme.colorScheme.onSurface
                     ),
                     border = null
                 )
@@ -437,9 +443,9 @@ fun MedicationCard(
                 .fillMaxWidth()
                 .clickable { onEdit(medication) },
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
+            border = androidx.compose.foundation.BorderStroke(1.dp, if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else MedicleanTeal.copy(alpha = 0.1f))
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(
@@ -480,7 +486,7 @@ fun MedicationCard(
                                 text = medication.name,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
-                                color = MedicleanDarkGreen,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.sharedElement(
                                     rememberSharedContentState(key = "medication_title_${medication.id}"),
                                     animatedVisibilityScope = animatedVisibilityScope
@@ -489,7 +495,7 @@ fun MedicationCard(
                             Text(
                                 text = medication.dosage,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MedicleanTextBlack.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -521,7 +527,7 @@ fun MedicationCard(
                         Text(
                             text = if (medication.isActive) "Próxima dose" else "Pausado",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MedicleanTextBlack.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                             fontWeight = FontWeight.Bold
                         )
                         Text(
@@ -626,7 +632,7 @@ fun ProfileSelectionOverlay(
                 .fillMaxWidth()
                 .clickable(enabled = false) {},
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-            color = Color.White
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Text(

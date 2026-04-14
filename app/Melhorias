@@ -8,13 +8,11 @@
 *   **💊 Visual Pills Customizer** (Abril 2026): Personalização de ícones (formato e cor) para identificação visual rápida.
 *   **📅 Exportação de Relatório Médico** (Abril 2026): Geração de PDF profissional com histórico de doses para envio a médicos.
 *   **📷 OCR Inteligente** (Abril 2026): Captura de nome e miligramagem via câmera com animação de scanner em tempo real.
+*   **🌓 Refinamento de Tema Escuro** (Abril 2026): Implementada paleta 'Deep Teal-Grey' premium, reduzindo o cansaço visual e tornando o app mais elegante.
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
 #### 🎨 Experiência do Usuário (UI/UX Premium)
-*   **🌓 Refinamento de Tema Escuro**: Ajustar o `Dark Mode` para usar tons de cinza azulado profundo em vez de preto puro.
-
-#### 🧠 Inteligência e Automação (IA & Android)
 *   **🎙️ Registro por Voz**: Adicionar um comando rápido "Registrar Dose" via voz para confirmação mãos-livres.
 
 #### ⚙️ Funcionalidades Avançadas & Robustez
