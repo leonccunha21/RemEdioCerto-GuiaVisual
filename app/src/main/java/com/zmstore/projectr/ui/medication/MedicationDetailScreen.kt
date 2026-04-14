@@ -1,4 +1,4 @@
-﻿package com.zmstore.projectr.ui.medication
+package com.zmstore.projectr.ui.medication
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -169,9 +169,10 @@ fun MedicationDetailScreen(
                 // Shared Visual Header
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = if (false) Color(0xFF1E2A28) else Color.White,
-                    shape = RoundedCornerShape(28.dp),
-                    shadowElevation = 2.dp
+                    color = Color.White,
+                    shape = RoundedCornerShape(20.dp),
+                    shadowElevation = 2.dp,
+                    border = BorderStroke(1.dp, Color(0xFFE8ECEB))
                 ) {
                     Row(
                         modifier = Modifier.padding(20.dp),

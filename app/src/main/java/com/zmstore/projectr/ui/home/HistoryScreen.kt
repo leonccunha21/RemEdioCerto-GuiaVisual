@@ -1,4 +1,4 @@
-﻿package com.zmstore.projectr.ui.home
+package com.zmstore.projectr.ui.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -257,7 +257,7 @@ fun WeeklyAdherenceChart(history: List<DoseHistory>) {
                         modifier = Modifier
                             .width(8.dp)
                             .height(barHeight.dp.coerceAtLeast(4.dp))
-                            .background(if (index == 6) Color.White else Color.White.copy(alpha = 0.3f), CircleShape)
+                            .background(if (index == 6) MedicleanTeal else MedicleanTeal.copy(alpha = 0.3f), CircleShape)
                     )
                 }
             }
@@ -270,7 +270,7 @@ fun WeeklyAdherenceChart(history: List<DoseHistory>) {
                     modifier = Modifier.weight(1f), 
                     textAlign = TextAlign.Center, 
                     style = MaterialTheme.typography.labelSmall, 
-                    color = Color.White.copy(alpha = 0.6f),
+                    color = MedicleanDarkGreen.copy(alpha = 0.6f),
                     fontWeight = FontWeight.Black
                 )
             }
@@ -288,18 +288,19 @@ fun AdherenceStatsCard(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        color = MedicleanTeal,
-        shadowElevation = 8.dp
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 2.dp,
+        border = BorderStroke(1.dp, Color(0xFFE8ECEB))
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("PONTUAÇÃO", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f), fontWeight = FontWeight.Black)
-                    Text("${(totalTaken * 10).coerceAtMost(100)}%", style = MaterialTheme.typography.headlineLarge, color = Color.White, fontWeight = FontWeight.Black)
+                    Text("PONTUAÇÃO", style = MaterialTheme.typography.labelSmall, color = MedicleanDarkGreen.copy(alpha = 0.5f), fontWeight = FontWeight.Black)
+                    Text("${(totalTaken * 10).coerceAtMost(100)}%", style = MaterialTheme.typography.headlineLarge, color = MedicleanDarkGreen, fontWeight = FontWeight.Black)
                 }
-                Surface(color = Color.White.copy(alpha = 0.2f), shape = CircleShape) {
-                    Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = Color.White, modifier = Modifier.padding(12.dp).size(24.dp))
+                Surface(color = MedicleanGold.copy(alpha = 0.1f), shape = CircleShape) {
+                    Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = MedicleanGold, modifier = Modifier.padding(12.dp).size(24.dp))
                 }
             }
             
@@ -311,7 +312,7 @@ fun AdherenceStatsCard(
                 Surface(
                     onClick = onExportPdf,
                     modifier = Modifier.weight(1f),
-                    color = Color.White,
+                    color = MedicleanTeal.copy(alpha=0.1f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -323,14 +324,14 @@ fun AdherenceStatsCard(
                 Surface(
                     onClick = onShareQr,
                     modifier = Modifier.weight(1f),
-                    color = Color.White.copy(alpha = 0.2f),
+                    color = MedicleanTeal,
                     shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+                    shadowElevation = 2.dp
                 ) {
                     Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.QrCode, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("SHARE", color = Color.White, fontWeight = FontWeight.Black, fontSize = 12.sp)
+                        Text("COMPARTILHAR", color = Color.White, fontWeight = FontWeight.Black, fontSize = 12.sp)
                     }
                 }
             }

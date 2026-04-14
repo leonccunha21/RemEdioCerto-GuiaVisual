@@ -1,4 +1,4 @@
-﻿package com.zmstore.projectr.ui.profile
+package com.zmstore.projectr.ui.profile
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -82,9 +82,10 @@ fun ProfileScreen(
             
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(28.dp),
-                color = if (false) Color(0xFF1E2A28) else Color.White,
-                shadowElevation = 2.dp
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = BorderStroke(1.dp, Color(0xFFE8ECEB))
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     PremiumTextField(
@@ -118,7 +119,7 @@ fun ProfileScreen(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(28.dp),
+                shape = RoundedCornerShape(20.dp),
                 color = MedicleanTeal.copy(alpha = 0.05f),
                 border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
             ) {
@@ -145,9 +146,10 @@ fun ProfileScreen(
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(28.dp),
-                color = if (false) Color(0xFF1E2A28) else Color.White,
-                shadowElevation = 2.dp
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = BorderStroke(1.dp, Color(0xFFE8ECEB))
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     PremiumTextField(

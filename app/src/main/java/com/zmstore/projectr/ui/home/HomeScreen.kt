@@ -1,4 +1,4 @@
-﻿package com.zmstore.projectr.ui.home
+package com.zmstore.projectr.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
@@ -295,12 +295,11 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (false) Color(0xFF1E2A28) else MedicleanTeal
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, Color(0xFFE8ECEB))
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             // Background organic shape decoration
@@ -314,86 +313,83 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
 
             Row(
                 modifier = Modifier
-                    .padding(28.dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Surface(
-                        color = Color.White.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(12.dp)
+                        color = MedicleanTeal.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "DASHBOARD HOJE",
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            text = "RESUMO DE HOJE",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Black,
-                            color = Color.White,
+                            color = MedicleanTeal,
                             letterSpacing = 1.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "$taken de $total",
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = MedicleanDarkGreen
                     )
                     Text(
                         text = "doses concluídas",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.8f),
+                        color = MedicleanDarkGreen.copy(alpha = 0.6f),
                         fontWeight = FontWeight.Bold
                     )
+
                     
-                    Spacer(modifier = Modifier.height(20.dp))
                     
-                    // Premium Voice Action Button
-                    Surface(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Voice Action TextButton instead of a large surface button
+                    TextButton(
                         onClick = onVoiceClick,
-                        color = MedicleanTeal,
-                        shape = RoundedCornerShape(16.dp),
-                        shadowElevation = 4.dp
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier.height(30.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Icon(Icons.Default.Mic, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("Confirmar por Voz", style = MaterialTheme.typography.labelLarge, color = Color.White, fontWeight = FontWeight.Black)
-                        }
+                        Icon(Icons.Default.Mic, contentDescription = null, tint = MedicleanTeal, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text("Confirmar por Voz", style = MaterialTheme.typography.labelMedium, color = MedicleanTeal, fontWeight = FontWeight.Black)
                     }
                 }
 
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(110.dp)) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(80.dp)) {
                     // Track
                     CircularProgressIndicator(
                         progress = { 1f },
                         modifier = Modifier.fillMaxSize(),
-                        color = Color.White.copy(alpha = 0.2f),
-                        strokeWidth = 14.dp,
+                        color = Color.Black.copy(alpha = 0.05f),
+                        strokeWidth = 10.dp,
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )
                     // Progress
                     CircularProgressIndicator(
                         progress = { progress },
                         modifier = Modifier.fillMaxSize(),
-                        color = Color.White,
-                        strokeWidth = 14.dp,
+                        color = MedicleanTeal,
+                        strokeWidth = 10.dp,
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "$percentage%",
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
-                            color = Color.White
+                            color = MedicleanDarkGreen
                         )
                     }
                 }
             }
+
         }
     }
 }
