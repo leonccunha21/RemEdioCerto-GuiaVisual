@@ -28,10 +28,12 @@ import com.zmstore.projectr.data.model.Profile
 import com.zmstore.projectr.ui.MainViewModel
 import com.zmstore.projectr.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     viewModel: MainViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNavigateToCamera: () -> Unit,
     onNavigateToDetail: (Int, String) -> Unit,
     onNavigateToHistory: () -> Unit,
@@ -132,11 +134,15 @@ fun HomeScreen(
                 )
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
+                val adherence by viewModel.todaysAdherence.collectAsState()
+
                 HomeHeader(
                     selectedProfile = selectedProfile,
                     onOpenDrawer = onOpenDrawer,
                     onProfileClick = { showProfileMenu = true }
                 )
+
+                HealthDashboard(adherence = adherence)
 
                 HomeSearchSection(
                     searchQuery = searchQuery,
@@ -177,6 +183,8 @@ fun HomeScreen(
                         items(medications, key = { it.id }) { medication ->
                             MedicationCard(
                                 medication = medication,
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
                                 countdown = viewModel.getMedicationCountdown(medication),
                                 onConfirm = { medicationToConfirm = it },
                                 onEdit = { onNavigateToDetail(it.id, it.name) },
@@ -195,6 +203,80 @@ fun HomeScreen(
                         showProfileMenu = false
                     },
                     onDismiss = { showProfileMenu = false }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun HealthDashboard(adherence: Pair<Int, Int>) {
+    val (taken, total) = adherence
+    val progress = if (total > 0) taken.toFloat() / total else 0f
+    val percentage = (progress * 100).toInt()
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Progresso Diário",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MedicleanDarkGreen
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = when {
+                        progress >= 1f -> "Tudo certo por hoje! 🎉"
+                        progress > 0.5f -> "Quase lá! Continue assim."
+                        progress > 0f -> "Dia iniciado. Mantenha o foco!"
+                        else -> "Nenhum remédio tomado hoje."
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MedicleanDarkGreen.copy(alpha = 0.6f)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "$taken de $total medicamentos",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MedicleanTeal
+                )
+            }
+
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(80.dp)) {
+                CircularProgressIndicator(
+                    progress = { 1f },
+                    modifier = Modifier.fillMaxSize(),
+                    color = MedicleanTeal.copy(alpha = 0.1f),
+                    strokeWidth = 8.dp,
+                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                )
+                CircularProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier.fillMaxSize(),
+                    color = MedicleanTeal,
+                    strokeWidth = 8.dp,
+                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                )
+                Text(
+                    text = "$percentage%",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Black,
+                    color = MedicleanDarkGreen
                 )
             }
         }
@@ -338,125 +420,139 @@ fun HomeSearchSection(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MedicationCard(
     medication: Medication,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     countdown: String,
     onConfirm: (Medication) -> Unit,
     onEdit: (Medication) -> Unit,
     onDelete: (Medication) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEdit(medication) },
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MedicleanMint.copy(alpha = 0.4f),
-                        modifier = Modifier.size(56.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Default.Medication,
-                                contentDescription = null,
-                                tint = MedicleanTeal,
-                                modifier = Modifier.size(32.dp)
+    with(sharedTransitionScope) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onEdit(medication) },
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = MedicleanMint.copy(alpha = 0.4f),
+                            modifier = Modifier
+                                .size(56.dp)
+                                .sharedElement(
+                                    rememberSharedContentState(key = "medication_icon_${medication.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.Medication,
+                                    contentDescription = null,
+                                    tint = MedicleanTeal,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
+                        
+                        Spacer(modifier = Modifier.width(16.dp))
+                        
+                        Column {
+                            Text(
+                                text = medication.name,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MedicleanDarkGreen,
+                                modifier = Modifier.sharedElement(
+                                    rememberSharedContentState(key = "medication_title_${medication.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            )
+                            Text(
+                                text = medication.dosage,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MedicleanTextBlack.copy(alpha = 0.7f)
                             )
                         }
                     }
-                    
-                    Spacer(modifier = Modifier.width(16.dp))
-                    
+
+                    if (medication.stockCount <= 5 && medication.stockCount > 0) {
+                        Surface(
+                            color = Color.Red.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "Estoque Baixo",
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.Red,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Column {
                         Text(
-                            text = medication.name,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MedicleanDarkGreen
-                        )
-                        Text(
-                            text = medication.dosage,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MedicleanTextBlack.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-
-                if (medication.stockCount <= 5 && medication.stockCount > 0) {
-                    Surface(
-                        color = Color.Red.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = "Estoque Baixo",
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            text = if (medication.isActive) "Próxima dose" else "Pausado",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.Red,
+                            color = MedicleanTextBlack.copy(alpha = 0.5f),
                             fontWeight = FontWeight.Bold
                         )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = if (medication.isActive) "Próxima dose" else "Pausado",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MedicleanTextBlack.copy(alpha = 0.5f),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = countdown,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = if (medication.isActive) MedicleanTeal else Color.Gray
-                    )
-                }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IconButton(
-                        onClick = { onDelete(medication) },
-                        modifier = Modifier.background(Color.Red.copy(alpha = 0.1f), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Delete, contentDescription = "Excluir", tint = Color.Red, modifier = Modifier.size(20.dp))
-                    }
-                    
-                    IconButton(
-                        onClick = { onEdit(medication) },
-                        modifier = Modifier.background(MedicleanMint.copy(alpha = 0.4f), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MedicleanTeal, modifier = Modifier.size(20.dp))
+                        Text(
+                            text = countdown,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = if (medication.isActive) MedicleanTeal else Color.Gray
+                        )
                     }
 
-                    if (medication.isActive) {
-                        Button(
-                            onClick = { onConfirm(medication) },
-                            colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal),
-                            shape = RoundedCornerShape(12.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        IconButton(
+                            onClick = { onDelete(medication) },
+                            modifier = Modifier.background(Color.Red.copy(alpha = 0.1f), CircleShape)
                         ) {
-                            Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("TOMAR", fontWeight = FontWeight.Black)
+                            Icon(Icons.Default.Delete, contentDescription = "Excluir", tint = Color.Red, modifier = Modifier.size(20.dp))
+                        }
+                        
+                        IconButton(
+                            onClick = { onEdit(medication) },
+                            modifier = Modifier.background(MedicleanMint.copy(alpha = 0.4f), CircleShape)
+                        ) {
+                            Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MedicleanTeal, modifier = Modifier.size(20.dp))
+                        }
+
+                        if (medication.isActive) {
+                            Button(
+                                onClick = { onConfirm(medication) },
+                                colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal),
+                                shape = RoundedCornerShape(12.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("TOMAR", fontWeight = FontWeight.Black)
+                            }
                         }
                     }
                 }

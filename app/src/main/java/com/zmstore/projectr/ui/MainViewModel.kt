@@ -80,6 +80,27 @@ class MainViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val todaysAdherence: StateFlow<Pair<Int, Int>> = medications.combine(doseHistory) { meds, history ->
+        val activeMeds = meds.filter { it.isActive }
+        if (activeMeds.isEmpty()) return@combine 0 to 0
+        
+        val now = java.util.Calendar.getInstance()
+        val startOfDay = now.apply {
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        val takenTodayIds = history
+            .filter { it.timestamp >= startOfDay }
+            .map { it.medicationId }
+            .distinct()
+        
+        val takenCount = activeMeds.count { it.id in takenTodayIds }
+        takenCount to activeMeds.size
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0 to 0)
+
     init {
         viewModelScope.launch {
             _isLoading.value = false

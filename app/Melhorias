@@ -1,22 +1,22 @@
 ### Sempre que iniciar uma melhoria verificar o arquivo Regras para verificar se a melhoria está dentro dos padrões de desenvolvimento.
 
 ### Melhorias Implementadas (CONCLUÍDAS ✅)
+*   **✨ Shared Element Transitions** (Abril 2026): Implementadas transições premium entre HomeScreen e MedicationDetail.
+*   **📊 Dashboard de Adesão** (Abril 2026): Novo componente visual na Home com progresso diário circular.
+*   **🤖 Pesquisa com IA (Gemini)** (Abril 2026): Preenchimento automático de campos avançados (bula) e aviso de interações medicamentosas.
+*   **🔒 Proteção Biométrica** (Abril 2026): Suporte a desbloqueio via digital/face ao abrir o aplicativo.
 
+### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
-desativar login por telefone por enquanto
-mudar cor da letra do app, nao da para ver nada
+#### 🎨 Experiência do Usuário (UI/UX Premium)
+*   **💊 Visual Pills Customizer**: Permitir que o usuário escolha o formato (cápsula, comprimido redondo, gota) e a cor do ícone no card para identificação visual imediata.
+*   **🌓 Refinamento de Tema Escuro**: Ajustar o `Dark Mode` para usar tons de cinza azulado profundo em vez de preto puro.
 
+#### 🧠 Inteligência e Automação (IA & Android)
+*   **📷 OCR Inteligente**: Melhorar a captura de câmera para sugerir automaticamente o nome e a miligramagem do medicamento ao tirar foto da caixa.
+*   **🎙️ Registro por Voz**: Adicionar um comando rápido "Registrar Dose" via voz para confirmação mãos-livres.
 
-
-
-
-### 🚀 Sugestões de Melhorias Profissionais (Pendente/Futuro)
-
-*   **⚡ Animações de Transição**: Implementar `AnimatedContent` e `SharedElementTransition` entre a lista da Home e os detalhes do medicamento para um visual premium.
-*   **📊 Insights de Saúde**: Criar um dashboard com gráficos mensais de adesão, mostrando os melhores horários e consistência do usuário.
-*   **📷 Scanner de Código de Barras**: Integrar biblioteca de leitura de códigos de barras para cadastrar medicamentos instantaneamente buscando em uma base de dados.
-*   **☁️ Sincronização em Tempo Real**: Melhorar o `CloudBackupRepository` para suportar notificações push quando o estoque estiver baixo, sincronizando entre múltiplos dispositivos.
-*   **💡 Assistente Gemini Pro**: Expandir a IA para analisar o histórico de doses e sugerir ajustes ou emitir alertas baseados em interações complexas.
-*   **🧩 Widgets Interativos**: Adicionar botões de "Check" diretamente no Widget da tela inicial do Android.
-*   **🌓 Suporte Total a Tema Escuro**: Refinar as cores de contraste para garantir que o "Dark Mode" seja tão confortável quanto o "Light Mode".
-*   **🔒 Segurança Avançada**: Implementar criptografia SQLCipher no banco de dados local Room para proteger dados sensíveis de saúde.
+#### ⚙️ Funcionalidades Avançadas & Robustez
+*   **📶 Sincronização em Nuvem (Multi-dispositivo)**: Implementar Firebase para que cuidadores e familiares compartilhem o status das doses.
+*   **🚨 Alerta de Estoque Crítico**: Notificação proativa quando o `stockCount` chegar a um limite crítico.
+*   **📅 Exportação de Relatório Médico**: Gerar um PDF profissional com o histórico de adesão para enviar ao médico via WhatsApp.

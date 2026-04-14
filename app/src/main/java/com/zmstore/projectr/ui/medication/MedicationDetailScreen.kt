@@ -40,10 +40,12 @@ import java.util.concurrent.TimeUnit
 import androidx.compose.ui.res.stringResource
 import com.zmstore.projectr.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun MedicationDetailScreen(
     viewModel: com.zmstore.projectr.ui.MainViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     medicationId: Int = -1,
     medicationName: String?,
     onBack: () -> Unit,
@@ -125,80 +127,154 @@ fun MedicationDetailScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MedicleanMint)
-    ) {
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = { Text(if (medicationId == -1) stringResource(R.string.detail_title_add) else stringResource(R.string.detail_title_edit), fontWeight = FontWeight.Bold, color = MedicleanDarkGreen) },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanDarkGreen)
-                        }
-                    }
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-                    .imePadding()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Warning Banner
-                Surface(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    color = Color.Red.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(16.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, Color.Red.copy(alpha = 0.3f))
-                ) {
-                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Info, contentDescription = null, tint = Color.Red)
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column {
-                            Text(stringResource(R.string.detail_warning_title), style = MaterialTheme.typography.labelLarge, color = Color.Red, fontWeight = FontWeight.Black)
-                            Text(stringResource(R.string.detail_warning_text), style = MaterialTheme.typography.bodySmall, color = MedicleanTextBlack.copy(alpha = 0.8f))
-                        }
-                    }
-                }
-
-                if (medicationId == -1) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        InputOptionButton(icon = Icons.Default.Mic, label = "Voz", modifier = Modifier.weight(1f), onClick = {
-                            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+    with(sharedTransitionScope) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MedicleanMint)
+        ) {
+            Scaffold(
+                containerColor = Color.Transparent,
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = { Text(if (medicationId == -1) stringResource(R.string.detail_title_add) else stringResource(R.string.detail_title_edit), fontWeight = FontWeight.Bold, color = MedicleanDarkGreen) },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                        navigationIcon = {
+                            IconButton(onClick = onBack) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanDarkGreen)
                             }
-                            speechRecognizerLauncher.launch(intent)
-                        })
-                        InputOptionButton(icon = Icons.Default.CameraAlt, label = "Foto", modifier = Modifier.weight(1f), onClick = onNavigateToCamera)
-                    }
-                }
-
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.detail_field_name)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = MedicleanDarkGreen,
-                        unfocusedTextColor = MedicleanDarkGreen,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedBorderColor = MedicleanTeal,
-                        unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f),
-                        focusedLabelColor = MedicleanTeal,
-                        unfocusedLabelColor = MedicleanDarkGreen.copy(alpha = 0.6f)
+                        }
                     )
-                )
+                }
+            ) { innerPadding ->
+                Column(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .imePadding()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Shared Visual Header
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(20.dp),
+                            color = MedicleanMint.copy(alpha = 0.8f),
+                            modifier = Modifier
+                                .size(80.dp)
+                                .sharedElement(
+                                    rememberSharedContentState(key = "medication_icon_$medicationId"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.Medication,
+                                    contentDescription = null,
+                                    tint = MedicleanTeal,
+                                    modifier = Modifier.size(48.dp)
+                                )
+                            }
+                        }
+                        
+                        Spacer(modifier = Modifier.width(20.dp))
+                        
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = name.ifBlank { "Novo Medicamento" },
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MedicleanDarkGreen,
+                                modifier = Modifier.sharedElement(
+                                    rememberSharedContentState(key = "medication_title_$medicationId"),
+                                    animatedVisibilityScope = animatedVisibilityScope
+                                )
+                            )
+                            if (dosage.isNotBlank()) {
+                                Text(
+                                    text = dosage,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MedicleanTextBlack.copy(alpha = 0.6f)
+                                )
+                            }
+                        }
+                    }
+
+                    // Warning Banner
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        color = Color.Red.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(16.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, Color.Red.copy(alpha = 0.3f))
+                    ) {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Info, contentDescription = null, tint = Color.Red)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(stringResource(R.string.detail_warning_title), style = MaterialTheme.typography.labelLarge, color = Color.Red, fontWeight = FontWeight.Black)
+                                Text(stringResource(R.string.detail_warning_text), style = MaterialTheme.typography.bodySmall, color = MedicleanTextBlack.copy(alpha = 0.8f))
+                            }
+                        }
+                    }
+
+                    if (medicationId == -1) {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            InputOptionButton(icon = Icons.Default.Mic, label = "Voz", modifier = Modifier.weight(1f), onClick = {
+                                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                                    putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                                }
+                                speechRecognizerLauncher.launch(intent)
+                            })
+                            InputOptionButton(icon = Icons.Default.CameraAlt, label = "Foto", modifier = Modifier.weight(1f), onClick = onNavigateToCamera)
+                        }
+                    }
+
+                    val isAiSearching by viewModel.isAiSearching.collectAsState()
+                    val userPrefs by viewModel.userPreferences.collectAsState()
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            label = { Text(stringResource(R.string.detail_field_name)) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            trailingIcon = {
+                                if (isAiSearching) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp, color = MedicleanTeal)
+                                } else if (name.isNotBlank() && userPrefs.geminiApiKey.isNotBlank()) {
+                                    IconButton(onClick = { viewModel.fetchMedicationInfo(name) }) {
+                                        Icon(Icons.Default.AutoAwesome, contentDescription = "Pesquisar com IA", tint = MedicleanTeal)
+                                    }
+                                }
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = MedicleanDarkGreen,
+                                unfocusedTextColor = MedicleanDarkGreen,
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White,
+                                focusedBorderColor = MedicleanTeal,
+                                unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f),
+                                focusedLabelColor = MedicleanTeal,
+                                unfocusedLabelColor = MedicleanDarkGreen.copy(alpha = 0.6f)
+                            )
+                        )
+                        
+                        if (name.isNotBlank() && userPrefs.geminiApiKey.isBlank()) {
+                            Text(
+                                "Configure sua chave Gemini no perfil para usar IA",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MedicleanDarkGreen.copy(alpha = 0.5f),
+                                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                            )
+                        }
+                    }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedTextField(
@@ -276,6 +352,40 @@ fun MedicationDetailScreen(
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Text("Em uso (Receber lembretes)", fontWeight = FontWeight.Bold, color = MedicleanDarkGreen)
                     Switch(checked = isActive, onCheckedChange = { isActive = it }, colors = SwitchDefaults.colors(checkedTrackColor = MedicleanTeal))
+                }
+
+                TextButton(onClick = { showOptionalFields = !showOptionalFields }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(if (showOptionalFields) "Ocultar detalhes avançados" else "Ver detalhes avançados (IA)", color = MedicleanTeal, fontWeight = FontWeight.Bold)
+                        Icon(if (showOptionalFields) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null, tint = MedicleanTeal)
+                    }
+                }
+
+                AnimatedVisibility(visible = showOptionalFields) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        ResearchInfoField(label = "Para que serve", value = purpose, onValueChange = { purpose = it })
+                        ResearchInfoField(label = "Como tomar / Instruções", value = instructions, onValueChange = { instructions = it })
+                        ResearchInfoField(label = "Efeitos Colaterais", value = sideEffects, onValueChange = { sideEffects = it })
+                        ResearchInfoField(label = "Avisos e Alertas", value = alerts, onValueChange = { alerts = it }, isWarning = true)
+                        
+                        val interactionWarning by viewModel.interactionWarning.collectAsState()
+                        if (interactionWarning != null) {
+                            Surface(
+                                color = Color.Yellow.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Color.Yellow.copy(alpha = 0.5f))
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Text("Interação Detectada (Aviso IA)", fontWeight = FontWeight.Bold, color = Color(0xFF856404), fontSize = 12.sp)
+                                    Text(interactionWarning!!, color = Color(0xFF856404), fontSize = 11.sp)
+                                    TextButton(onClick = { viewModel.clearInteractionWarning() }, modifier = Modifier.align(Alignment.End)) {
+                                        Text("Entendi", color = Color(0xFF856404), fontWeight = FontWeight.Bold, fontSize = 10.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 Button(

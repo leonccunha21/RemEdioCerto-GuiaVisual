@@ -35,6 +35,7 @@ sealed class Screen(val route: String) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -43,108 +44,114 @@ fun NavGraph(
     onOpenDrawer: () -> Unit = {},
     onRequestAlarmPermission: () -> Unit = {}
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Login.route,
-        enterTransition = { fadeIn(animationSpec = tween(400)) },
-        exitTransition = { fadeOut(animationSpec = tween(400)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(400)) },
-        popExitTransition = { fadeOut(animationSpec = tween(400)) }
-    ) {
-        composable(Screen.Login.route) {
-            LoginScreen(
-                viewModel = viewModel,
-                onNavigateToHome = {
-                    onRequestAlarmPermission() // Solicita permissão de alarme APÓS o login
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+    SharedTransitionLayout {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Login.route,
+            enterTransition = { fadeIn(animationSpec = tween(400)) },
+            exitTransition = { fadeOut(animationSpec = tween(400)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(400)) },
+            popExitTransition = { fadeOut(animationSpec = tween(400)) }
+        ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    viewModel = viewModel,
+                    onNavigateToHome = {
+                        onRequestAlarmPermission() // Solicita permissão de alarme APÓS o login
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
-        composable(Screen.Home.route) {
-            HomeScreen(
-                viewModel = viewModel,
-                onNavigateToCamera = { 
-                    if (onCheckCameraPermission()) {
-                        navController.navigate(Screen.Camera.route)
+                )
+            }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    viewModel = viewModel,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@composable,
+                    onNavigateToCamera = { 
+                        if (onCheckCameraPermission()) {
+                            navController.navigate(Screen.Camera.route)
+                        }
+                    },
+                    onNavigateToDetail = { id: Int, name: String -> navController.navigate(Screen.Detail.createRoute(name, id)) },
+                    onNavigateToHistory = { navController.navigate(Screen.History.route) },
+                    onOpenDrawer = onOpenDrawer,
+                    onNavigateToMedicationList = { navController.navigate(Screen.MedicationList.route) },
+                    onNavigateToAlarms = { navController.navigate(Screen.Alarms.route) }
+                )
+            }
+            composable(Screen.MedicationList.route) {
+                MedicationListScreen(
+                    viewModel = viewModel,
+                    onNavigateToDetail = { id: Int, name: String -> navController.navigate(Screen.Detail.createRoute(name, id)) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Alarms.route) {
+                AlarmManagementScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Camera.route) {
+                CameraScreen(
+                    onTextDetected = { text ->
+                        navController.navigate(Screen.Detail.createRoute(text)) {
+                            popUpTo(Screen.Home.route)
+                        }
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.History.route) {
+                HistoryScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                route = Screen.Detail.route,
+                arguments = listOf(
+                    navArgument("medicationName") { type = NavType.StringType },
+                    navArgument("id") { type = NavType.IntType; defaultValue = -1 }
+                )
+            ) { backStackEntry ->
+                val medicationName = backStackEntry.arguments?.getString("medicationName")
+                val medicationId = backStackEntry.arguments?.getInt("id") ?: -1
+                MedicationDetailScreen(
+                    viewModel = viewModel,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this@composable,
+                    medicationId = medicationId,
+                    medicationName = medicationName,
+                    onBack = { navController.popBackStack() },
+                    onNavigateToCamera = {
+                        if (onCheckCameraPermission()) {
+                            navController.navigate(Screen.Camera.route)
+                        }
+                    },
+                    onSave = { medication ->
+                        if (medication.id == 0) {
+                            viewModel.insertMedication(medication)
+                        } else {
+                            viewModel.updateMedication(medication)
+                        }
+                        navController.popBackStack()
                     }
-                },
-                onNavigateToDetail = { id: Int, name: String -> navController.navigate(Screen.Detail.createRoute(name, id)) },
-                onNavigateToHistory = { navController.navigate(Screen.History.route) },
-                onOpenDrawer = onOpenDrawer,
-                onNavigateToMedicationList = { navController.navigate(Screen.MedicationList.route) },
-                onNavigateToAlarms = { navController.navigate(Screen.Alarms.route) }
-            )
-        }
-        composable(Screen.MedicationList.route) {
-            MedicationListScreen(
-                viewModel = viewModel,
-                onNavigateToDetail = { id: Int, name: String -> navController.navigate(Screen.Detail.createRoute(name, id)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Alarms.route) {
-            AlarmManagementScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Camera.route) {
-            CameraScreen(
-                onTextDetected = { text ->
-                    navController.navigate(Screen.Detail.createRoute(text)) {
-                        popUpTo(Screen.Home.route)
-                    }
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.History.route) {
-            HistoryScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(
-            route = Screen.Detail.route,
-            arguments = listOf(
-                navArgument("medicationName") { type = NavType.StringType },
-                navArgument("id") { type = NavType.IntType; defaultValue = -1 }
-            )
-        ) { backStackEntry ->
-            val medicationName = backStackEntry.arguments?.getString("medicationName")
-            val medicationId = backStackEntry.arguments?.getInt("id") ?: -1
-            MedicationDetailScreen(
-                viewModel = viewModel,
-                medicationId = medicationId,
-                medicationName = medicationName,
-                onBack = { navController.popBackStack() },
-                onNavigateToCamera = {
-                    if (onCheckCameraPermission()) {
-                        navController.navigate(Screen.Camera.route)
-                    }
-                },
-                onSave = { medication ->
-                    if (medication.id == 0) {
-                        viewModel.insertMedication(medication)
-                    } else {
-                        viewModel.updateMedication(medication)
-                    }
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable(Screen.Profile.route) {
-            com.zmstore.projectr.ui.profile.ProfileScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Help.route) {
-            com.zmstore.projectr.ui.help.HelpScreen(
-                onBack = { navController.popBackStack() }
-            )
+                )
+            }
+            composable(Screen.Profile.route) {
+                com.zmstore.projectr.ui.profile.ProfileScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.Help.route) {
+                com.zmstore.projectr.ui.help.HelpScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
