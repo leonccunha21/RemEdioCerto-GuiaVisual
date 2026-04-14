@@ -58,7 +58,7 @@ fun CameraScreen(
     var lastCandidate by remember { mutableStateOf("") }
     var recognitionCount by remember { mutableStateOf(0) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
             factory = { ctx ->
                 val previewView = PreviewView(ctx).apply {
@@ -83,21 +83,13 @@ fun CameraScreen(
                                     recognizer.process(image)
                                         .addOnSuccessListener { visionText ->
                                             if (visionText.text.isNotBlank()) {
-                                                // 1. Calculate Frame in Image Coordinates
-                                                // Note: Implementation usually involves scaling, but since we use a 
-                                                // visual guide for 'medication name', we can analyze all blocks
-                                                // and pick the one most likely to be a title.
-                                                
                                                 val allLines = visionText.textBlocks.flatMap { it.lines }
                                                 
-                                                // 2. Filter & Sort
                                                 val candidates = allLines
                                                     .filter { line -> 
                                                         val rect = line.boundingBox ?: return@filter false
-                                                        
-                                                        // ROI Check: Must be in the middle 60% of vertical and centered horizontally
                                                         val isVerticalCenter = rect.centerY() > image.height * 0.2 && 
-                                                                             rect.centerY() < image.height * 0.8
+                                                                              rect.centerY() < image.height * 0.8
                                                         
                                                         line.text.trim().length > 3 && 
                                                         line.text.any { it.isLetter() } &&
@@ -120,7 +112,7 @@ fun CameraScreen(
                                                 if (fullMatch.isNotBlank()) {
                                                     if (fullMatch == lastCandidate) {
                                                         recognitionCount++
-                                                        if (recognitionCount >= 5) { // Stabilized
+                                                        if (recognitionCount >= 5) {
                                                             detectedText = fullMatch
                                                         }
                                                     } else {
@@ -192,9 +184,7 @@ fun CameraScreen(
             val top = (size.height - frameHeight) / 2
             
             // Draw background dimming
-            drawRect(
-                color = Color.Black.copy(alpha = 0.7f)
-            )
+            drawRect(color = Color.Black.copy(alpha = 0.7f))
             
             // Clear the center frame
             drawRect(
@@ -204,127 +194,128 @@ fun CameraScreen(
                 blendMode = androidx.compose.ui.graphics.BlendMode.Clear
             )
             
-            // Draw frame border with a neon effect
+            // Border with gradient
             drawRect(
                 brush = Brush.linearGradient(
-                    colors = listOf(MedicleanTeal, MedicleanTeal.copy(alpha = 0.5f), MedicleanTeal)
+                    colors = listOf(MedicleanTeal, MedicleanMint, MedicleanTeal)
                 ),
                 topLeft = Offset(left, top),
                 size = Size(frameWidth, frameHeight),
-                style = Stroke(width = 3.dp.toPx())
+                style = Stroke(width = 2.dp.toPx())
             )
 
             // Scanning Line
             val scanLineY = top + (frameHeight * scanAnim)
             drawLine(
                 brush = Brush.horizontalGradient(
-                    colors = listOf(Color.Transparent, MedicleanTeal, Color.Transparent)
+                    colors = listOf(Color.Transparent, MedicleanMint, Color.Transparent)
                 ),
                 start = Offset(left, scanLineY),
                 end = Offset(left + frameWidth, scanLineY),
-                strokeWidth = 2.dp.toPx()
+                strokeWidth = 3.dp.toPx()
             )
             
-            // Corners accents
-            val cornerSize = 40.dp.toPx()
-            val strokeWidth = 6.dp.toPx()
+            // Premium Corners
+            val cornerLen = 32.dp.toPx()
+            val stroke = 4.dp.toPx()
             
-            // Top-left
-            drawLine(MedicleanTeal, Offset(left, top), Offset(left + cornerSize, top), strokeWidth)
-            drawLine(MedicleanTeal, Offset(left, top), Offset(left, top + cornerSize), strokeWidth)
-            
-            // Top-right
-            drawLine(MedicleanTeal, Offset(left + frameWidth, top), Offset(left + frameWidth - cornerSize, top), strokeWidth)
-            drawLine(MedicleanTeal, Offset(left + frameWidth, top), Offset(left + frameWidth, top + cornerSize), strokeWidth)
-            
-            // Bottom-left
-            drawLine(MedicleanTeal, Offset(left, top + frameHeight), Offset(left + cornerSize, top + frameHeight), strokeWidth)
-            drawLine(MedicleanTeal, Offset(left, top + frameHeight), Offset(left, top + frameHeight - cornerSize), strokeWidth)
-            
-            // Bottom-right
-            drawLine(MedicleanTeal, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth - cornerSize, top + frameHeight), strokeWidth)
-            drawLine(MedicleanTeal, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth, top + frameHeight - cornerSize), strokeWidth)
+            // TL
+            drawLine(MedicleanMint, Offset(left, top), Offset(left + cornerLen, top), stroke)
+            drawLine(MedicleanMint, Offset(left, top), Offset(left, top + cornerLen), stroke)
+            // TR
+            drawLine(MedicleanMint, Offset(left + frameWidth, top), Offset(left + frameWidth - cornerLen, top), stroke)
+            drawLine(MedicleanMint, Offset(left + frameWidth, top), Offset(left + frameWidth, top + cornerLen), stroke)
+            // BL
+            drawLine(MedicleanMint, Offset(left, top + frameHeight), Offset(left + cornerLen, top + frameHeight), stroke)
+            drawLine(MedicleanMint, Offset(left, top + frameHeight), Offset(left, top + frameHeight - cornerLen), stroke)
+            // BR
+            drawLine(MedicleanMint, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth - cornerLen, top + frameHeight), stroke)
+            drawLine(MedicleanMint, Offset(left + frameWidth, top + frameHeight), Offset(left + frameWidth, top + frameHeight - cornerLen), stroke)
         }
 
         // Overlay UI
-        Column(
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .fillMaxSize()
                 .padding(24.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (detectedText.isNotBlank()) {
-                Card(
-                    modifier = Modifier
-                        .padding(bottom = 24.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.8f)),
-                    border = androidx.compose.foundation.BorderStroke(2.dp, MedicleanTeal)
+            // Top Controls
+            Row(
+                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    onClick = onBack,
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.Black.copy(alpha = 0.4f)
                 ) {
-                    Text(
-                        text = stringResource(R.string.camera_detected, detectedText),
-                        modifier = Modifier.padding(20.dp),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
+                    Icon(
+                        Icons.Default.Close, 
+                        contentDescription = "Fechar", 
+                        tint = Color.White, 
+                        modifier = Modifier.padding(12.dp).size(24.dp)
                     )
                 }
-                
-                Button(
-                    onClick = { onTextDetected(detectedText) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal)
-                ) {
-                    Text(stringResource(R.string.camera_btn_confirm), fontWeight = FontWeight.Black, fontSize = 18.sp, color = Color.White)
-                }
-            } else {
-                Text(
-                    stringResource(R.string.camera_guide),
-                    color = Color.White.copy(alpha = 0.9f),
-                    modifier = Modifier
-                        .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                        .padding(12.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            ) {
-                IconButton(
+
+                Surface(
                     onClick = {
                         isFlashOn = !isFlashOn
                         cameraControl?.enableTorch(isFlashOn)
                     },
-                    modifier = Modifier
-                        .size(56.dp)
-                        .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
+                    shape = RoundedCornerShape(16.dp),
+                    color = if (isFlashOn) MedicleanGold.copy(alpha = 0.8f) else Color.Black.copy(alpha = 0.4f)
                 ) {
                     Icon(
                         imageVector = if (isFlashOn) Icons.Default.FlashOn else Icons.Default.FlashOff,
-                        contentDescription = stringResource(R.string.camera_btn_flash),
-                        tint = if (isFlashOn) Color.Yellow else Color.White,
-                        modifier = Modifier.size(28.dp)
+                        contentDescription = "Flash",
+                        tint = if (isFlashOn) Color.Black else Color.White,
+                        modifier = Modifier.padding(12.dp).size(24.dp)
                     )
                 }
+            }
 
-                TextButton(
-                    onClick = onBack,
-                    modifier = Modifier
-                        .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(stringResource(R.string.camera_btn_cancel), color = Color.White, fontWeight = FontWeight.Bold)
+            // Bottom Info/Action
+            Column(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (detectedText.isNotBlank()) {
+                    Surface(
+                        modifier = Modifier.padding(bottom = 20.dp),
+                        color = Color.White,
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("MEDICAMENTO IDENTIFICADO", style = MaterialTheme.typography.labelSmall, color = MedicleanTeal, fontWeight = FontWeight.Black)
+                            Text(detectedText.uppercase(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = MedicleanDarkGreen)
+                        }
+                    }
+
+                    Button(
+                        onClick = { onTextDetected(detectedText) },
+                        modifier = Modifier.fillMaxWidth().height(64.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal)
+                    ) {
+                        Text("CONFIRMAR MEDICAMENTO", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                    }
+                } else {
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    ) {
+                        Text(
+                            "Aponte para o nome na embalagem",
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

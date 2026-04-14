@@ -14,36 +14,42 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = MedicleanTeal,
-    secondary = MedicleanMint,
+    secondary = MedicleanTealLight,
     tertiary = MedicleanGold,
-    background = Color(0xFF0B1211), // Deep Teal-Grey
-    surface = Color(0xFF141D1B),    // Slightly lighter surface
+    background = Color(0xFF0F1716), // Deeper, more neutral dark background
+    surface = Color(0xFF17201F),    // Slightly lighter surface for elevation
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onTertiary = Color.White,
-    onBackground = Color(0xFFE0E0E0),
-    onSurface = Color(0xFFE0E0E0),
-    surfaceVariant = Color(0xFF1C2B28),
-    onSurfaceVariant = Color(0xFF8FA39F)
+    onSecondary = Color(0xFF003734),
+    onTertiary = Color.Black,
+    onBackground = Color(0xFFE1EAEA),
+    onSurface = Color(0xFFE1EAEA),
+    surfaceVariant = Color(0xFF232D2B),
+    onSurfaceVariant = Color(0xFFB0BEBC),
+    error = MedicleanError,
+    onError = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = MedicleanTeal,
-    secondary = MedicleanDarkGreen,
+    secondary = MedicleanTealDark,
     tertiary = MedicleanGold,
-    background = MedicleanWhite,
+    background = MedicleanSoftGray,
     surface = MedicleanWhite,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.Black,
     onBackground = MedicleanDarkGreen,
-    onSurface = MedicleanDarkGreen
+    onSurface = MedicleanDarkGreen,
+    surfaceVariant = Color(0xFFEEF5F3),
+    onSurfaceVariant = MedicleanTealDark,
+    error = MedicleanError,
+    onError = Color.White
 )
 
 @Composable
 fun ProjectRTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = false, // Desabilitado para manter a identidade visual Mediclean
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

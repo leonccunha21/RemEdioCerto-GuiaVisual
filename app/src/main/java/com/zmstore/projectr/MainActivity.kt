@@ -6,65 +6,36 @@ import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.*
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.zmstore.projectr.ui.MainViewModel
 import com.zmstore.projectr.ui.navigation.NavGraph
-import com.zmstore.projectr.ui.theme.ProjectRTheme
+import com.zmstore.projectr.ui.navigation.Screen
+import com.zmstore.projectr.ui.theme.*
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.*
 import androidx.core.content.ContextCompat
-import androidx.compose.ui.res.stringResource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.background
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Medication
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.zmstore.projectr.ui.theme.*
-import com.zmstore.projectr.ui.navigation.Screen
-import androidx.compose.material.icons.Icons
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Notifications
 import kotlinx.coroutines.launch
-
 import androidx.fragment.app.FragmentActivity
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricManager
@@ -181,9 +152,46 @@ class MainActivity : FragmentActivity() {
                         drawerContainerColor = MaterialTheme.colorScheme.surface,
                         modifier = Modifier.padding(end = 56.dp)
                     ) {
-                        Spacer(modifier = Modifier.padding(24.dp))
-                        Text(stringResource(R.string.home_drawer_title), modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                        // Premium Drawer Header
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(MedicleanTeal, MedicleanTealDark)
+                                    )
+                                )
+                                .padding(24.dp),
+                            contentAlignment = Alignment.BottomStart
+                        ) {
+                            Column {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = Color.White.copy(alpha = 0.2f),
+                                    modifier = Modifier.size(64.dp)
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(Icons.Default.Medication, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    stringResource(R.string.app_name),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Black
+                                )
+                                Text(
+                                    "Versão 2.4 - Premium",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White.copy(alpha = 0.7f),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
                         
                         val drawerItems = listOf(
                             Triple(stringResource(R.string.home_drawer_home), Icons.Default.Home, Screen.Home.route),
@@ -210,7 +218,12 @@ class MainActivity : FragmentActivity() {
                                         }
                                     }
                                 },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    selectedContainerColor = MedicleanTeal.copy(alpha = 0.1f),
+                                    unselectedContainerColor = Color.Transparent
+                                )
                             )
                         }
                     }
@@ -219,46 +232,67 @@ class MainActivity : FragmentActivity() {
                 androidx.compose.material3.Scaffold(
                     bottomBar = {
                         if (currentRoute == Screen.Home.route || currentRoute == Screen.MedicationList.route || currentRoute == Screen.History.route || currentRoute == Screen.Profile.route) {
-                            NavigationBar(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                tonalElevation = 8.dp
+                            Surface(
+                                tonalElevation = 8.dp,
+                                shadowElevation = 16.dp,
+                                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                             ) {
-                                val items = listOf(
-                                    Triple("Início", Icons.Default.Home, Screen.Home.route),
-                                    Triple("Remédios", Icons.Default.Medication, Screen.MedicationList.route),
-                                    Triple("Histórico", Icons.Default.CalendarToday, Screen.History.route),
-                                    Triple("Perfil", Icons.Default.Person, Screen.Profile.route)
-                                )
-
-                                items.forEach { (label, icon, route) ->
-                                    val selected = currentRoute == route
-                                    NavigationBarItem(
-                                        selected = selected,
-                                        onClick = {
-                                            if (currentRoute != route) {
-                                                navController.navigate(route) {
-                                                    popUpTo(Screen.Home.route) {
-                                                        saveState = true
-                                                    }
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
-                                            }
-                                        },
-                                        icon = { Icon(icon, contentDescription = label) },
-                                        label = { Text(label, style = MaterialTheme.typography.labelSmall) },
-                                        colors = NavigationBarItemDefaults.colors(
-                                            selectedIconColor = MedicleanTeal,
-                                            selectedTextColor = MedicleanTeal,
-                                            unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                            indicatorColor = MedicleanMint.copy(alpha = 0.4f)
-                                        )
+                                NavigationBar(
+                                    containerColor = if (isSystemInDarkTheme()) Color(0xFF17201F) else Color.White,
+                                    modifier = Modifier.height(80.dp),
+                                    tonalElevation = 0.dp
+                                ) {
+                                    val items = listOf(
+                                        Triple("Início", Icons.Default.Home, Screen.Home.route),
+                                        Triple("Remédios", Icons.Default.Medication, Screen.MedicationList.route),
+                                        Triple("Histórico", Icons.Default.CalendarToday, Screen.History.route),
+                                        Triple("Perfil", Icons.Default.Person, Screen.Profile.route)
                                     )
+
+                                    items.forEach { (label, icon, route) ->
+                                        val selected = currentRoute == route
+                                        NavigationBarItem(
+                                            selected = selected,
+                                            onClick = {
+                                                if (currentRoute != route) {
+                                                    navController.navigate(route) {
+                                                        popUpTo(Screen.Home.route) {
+                                                            saveState = true
+                                                        }
+                                                        launchSingleTop = true
+                                                        restoreState = true
+                                                    }
+                                                }
+                                            },
+                                            icon = { 
+                                                Icon(
+                                                    icon, 
+                                                    contentDescription = label,
+                                                    modifier = Modifier.size(26.dp)
+                                                ) 
+                                            },
+                                            label = { 
+                                                Text(
+                                                    label, 
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    fontWeight = if (selected) FontWeight.Black else FontWeight.Bold,
+                                                    fontSize = 10.sp
+                                                ) 
+                                            },
+                                            colors = NavigationBarItemDefaults.colors(
+                                                selectedIconColor = MedicleanTeal,
+                                                selectedTextColor = MedicleanTeal,
+                                                unselectedIconColor = MedicleanDarkGreen.copy(alpha = 0.4f),
+                                                unselectedTextColor = MedicleanDarkGreen.copy(alpha = 0.4f),
+                                                indicatorColor = MedicleanTeal.copy(alpha = 0.12f)
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+
                 ) { innerPadding ->
                     androidx.compose.foundation.layout.Box(modifier = Modifier.padding(innerPadding)) {
                         NavGraph(

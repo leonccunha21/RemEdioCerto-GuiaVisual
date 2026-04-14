@@ -2,19 +2,22 @@ package com.zmstore.projectr.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Mediclean Palette (Ref image)
-val MedicleanMint = Color(0xFFD1E8E2) // Background / Soft accents
-val MedicleanTeal = Color(0xFF006666) // Escurecido para melhor contraste (era 008080)
-val MedicleanDarkGreen = Color(0xFF0D2B23) // Escurecido para legibilidade máxima (era 1B4D3E)
-val MedicleanTextBlack = Color(0xFF000000) // Preto puro para legibilidade máxima
-val MedicleanWhite = Color(0xFFFFFFFF) // Cards
-val MedicleanGold = Color(0xFFB8860B) // Escurecido para contraste (era D4AF37)
+// Premium Mediclean Palette - Refined
+val MedicleanMint = Color(0xFFF0F9F6) // Softer, cleaner mint
+val MedicleanTeal = Color(0xFF00A79D) // More vibrant, modern teal
+val MedicleanTealDark = Color(0xFF006D65) // Deeper teal for contrast
+val MedicleanTealLight = Color(0xFF7BD5D0) // Soft teal for subtle elements
+val MedicleanDarkGreen = Color(0xFF1A3B34) // Refined dark green for text
+val MedicleanWhite = Color(0xFFFFFFFF)
+val MedicleanGold = Color(0xFFFFC107) // Standard premium gold
+val MedicleanSoftGray = Color(0xFFF8FAF9) // Clean background gray
+val MedicleanError = Color(0xFFFF5252) // Modern vibrant error red
 
-// Functional variants
-val Mint80 = Color(0xFFE5F1EE)
-val Teal80 = Color(0xFF339999)
-val DarkGreen80 = Color(0xFF487064)
+// Functional gradients
+val GradientStart = Color(0xFF00A79D)
+val GradientEnd = Color(0xFF00796B)
 
-val Mint40 = Color(0xFFD1E8E2)
-val Teal40 = Color(0xFF008080)
-val DarkGreen40 = Color(0xFF1B4D3E)
+// Surface and Glassmorphism (keeping existing or refining)
+val GlassWhite = Color(0xE6FFFFFF)
+val GlassTeal = Color(0x3300A79D)
+val CardShadow = Color(0x1A000000)

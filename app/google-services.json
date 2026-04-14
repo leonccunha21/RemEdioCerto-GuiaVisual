@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "628288864637-vb71g92rlecbcmop8lum2l6ackv6t5uj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zmstore.projectr",
+            "certificate_hash": "177ddd8f2b42cf772534e0a290c427840c99e263"
+          }
+        },
+        {
           "client_id": "628288864637-vo154qetl7jvmviop54kus3ut2r6nc5u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

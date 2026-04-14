@@ -1,24 +1,17 @@
 package com.zmstore.projectr.ui.profile
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Emergency
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,7 +34,6 @@ fun ProfileScreen(
     var emergency by remember { mutableStateOf("") }
     var geminiApiKey by remember { mutableStateOf("") }
     var isBiometricEnabled by remember { mutableStateOf(false) }
-    var isDarkModeEnabled by remember { mutableStateOf(false) }
 
     // Sync local state when prefs load
     LaunchedEffect(userPrefs) {
@@ -51,271 +43,246 @@ fun ProfileScreen(
         emergency = userPrefs.emergencyContact
         geminiApiKey = userPrefs.geminiApiKey
         isBiometricEnabled = userPrefs.isBiometricEnabled
-        // Assume dark mode is managed in userPrefs - let's verify UserPreferencesRepository
     }
 
-    Box(
+    Scaffold(
+        containerColor = Color.Transparent,
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = if (isSystemInDarkTheme()) 
-                        listOf(Color(0xFF1B2B28), Color(0xFF121D1B)) 
-                    else 
+                    if (isSystemInDarkTheme())
+                        listOf(Color(0xFF0F1716), Color(0xFF17201F))
+                    else
                         listOf(MedicleanWhite, MedicleanMint)
                 )
-            )
-    ) {
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                TopAppBar(
-                    title = { 
-                        Text(
-                            "MEUS DADOS", 
-                            fontWeight = FontWeight.Black, 
-                            color = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                            letterSpacing = 1.sp
-                        ) 
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack, 
-                                contentDescription = "Voltar", 
-                                tint = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen
-                            )
-                        }
-                    }
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                // Section Title
-                Text(
-                    text = "Informações Pessoais",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSystemInDarkTheme()) MedicleanMint else MedicleanDarkGreen
-                )
-
-                // Profile Card
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(28.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSystemInDarkTheme()) Color(0xFF243A36) else Color.White
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp, 
-                        MedicleanTeal.copy(alpha = if (isSystemInDarkTheme()) 0.3f else 0.1f)
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            label = { Text("Nome Completo") },
-                            modifier = Modifier.fillMaxWidth(),
-                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = MedicleanTeal) },
-                            shape = RoundedCornerShape(16.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                unfocusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                focusedBorderColor = MedicleanTeal,
-                                unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f)
-                            )
-                        )
-
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            val fieldColors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                unfocusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                focusedBorderColor = MedicleanTeal,
-                                unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f)
-                            )
-                            OutlinedTextField(
-                                value = weight,
-                                onValueChange = { weight = it },
-                                label = { Text("Peso (kg)") },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(16.dp),
-                                colors = fieldColors
-                            )
-                            OutlinedTextField(
-                                value = height,
-                                onValueChange = { height = it },
-                                label = { Text("Altura (cm)") },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(16.dp),
-                                colors = fieldColors
-                            )
-                        }
-                    }
-                }
-
-                // Emergency Section
-                Text(
-                    text = "Segurança e Emergência",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSystemInDarkTheme()) MedicleanMint else MedicleanDarkGreen,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(28.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSystemInDarkTheme()) Color(0xFF1B2B28) else MedicleanTeal.copy(alpha = 0.05f)
-                    ),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.2f))
-                ) {
-                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        OutlinedTextField(
-                            value = emergency,
-                            onValueChange = { emergency = it },
-                            label = { Text("Contato de Emergência") },
-                            modifier = Modifier.fillMaxWidth(),
-                            leadingIcon = { Icon(Icons.Default.Emergency, contentDescription = null, tint = MedicleanTeal) },
-                            shape = RoundedCornerShape(16.dp),
-                            placeholder = { Text("(00) 00000-0000") },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                unfocusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                focusedBorderColor = MedicleanTeal,
-                                unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f)
-                            )
-                        )
-                        
-                        Text(
-                            text = "Este contato será exibido em notificações críticas ou em caso de emergência médica salvos no app.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.6f) else MedicleanDarkGreen.copy(alpha = 0.6f)
-                        )
-                    }
-                }
-
-                // AI Settings Section
-                Text(
-                    text = "Configurações de IA e Privacidade",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSystemInDarkTheme()) MedicleanMint else MedicleanDarkGreen,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(28.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSystemInDarkTheme()) Color(0xFF243A36) else Color.White
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp, 
-                        MedicleanTeal.copy(alpha = if (isSystemInDarkTheme()) 0.3f else 0.1f)
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        OutlinedTextField(
-                            value = geminiApiKey,
-                            onValueChange = { geminiApiKey = it },
-                            label = { Text("Chave de API Gemini") },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Insira sua chave aqui...") },
-                            shape = RoundedCornerShape(16.dp),
-                            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                unfocusedTextColor = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen,
-                                focusedBorderColor = MedicleanTeal,
-                                unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.3f)
-                            )
-                        )
-                        
-                        androidx.compose.material3.HorizontalDivider(
-                            color = MedicleanTeal.copy(alpha = if (isSystemInDarkTheme()) 0.3f else 0.1f)
-                        )
-                        
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Proteção Biométrica",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen
-                                )
-                                Text(
-                                    text = "Exigir digital/face ao abrir o app",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.6f) else MedicleanDarkGreen.copy(alpha = 0.6f)
-                                )
-                            }
-                            Switch(
-                                checked = isBiometricEnabled,
-                                onCheckedChange = { isBiometricEnabled = it },
-                                colors = SwitchDefaults.colors(
-                                    checkedTrackColor = MedicleanTeal
-                                )
-                            )
-                        }
-                    }
-                }
-
-                Button(
-                    onClick = { 
-                        viewModel.updateProfile(name, weight, height, emergency, geminiApiKey, isBiometricEnabled)
-                        onBack()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
-                ) {
-                    Icon(Icons.Default.Save, contentDescription = null)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text("SALVAR ALTERAÇÕES", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
-                }
-
-                // Legal Section (Mandatory for Health Apps)
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TextButton(onClick = { 
-                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://sites.google.com/view/projectr-privacy-policy"))
-                        context.startActivity(intent)
-                    }) {
-                        Text(
-                            "Política de Privacidade",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MedicleanTeal,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+            ),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { 
                     Text(
-                        "Versão 1.4.0 • ProjectR Digital Health",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = (if (isSystemInDarkTheme()) Color.White else MedicleanDarkGreen).copy(alpha = 0.4f)
+                        "MEUS DADOS", 
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, letterSpacing = 2.sp), 
+                        color = MedicleanDarkGreen
+                    ) 
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier.padding(8.dp).background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanTeal)
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // Personal Info Section
+            ProfileSectionHeader("INFORMAÇÕES PESSOAIS", Icons.Default.Person)
+            
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+                shadowElevation = 2.dp
+            ) {
+                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    PremiumTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = "Nome Completo",
+                        icon = Icons.Default.Person
                     )
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        PremiumTextField(
+                            value = weight,
+                            onValueChange = { weight = it },
+                            label = "Peso (kg)",
+                            modifier = Modifier.weight(1f),
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                        )
+                        PremiumTextField(
+                            value = height,
+                            onValueChange = { height = it },
+                            label = "Altura (cm)",
+                            modifier = Modifier.weight(1f),
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                        )
+                    }
+                }
+            }
+
+            // Emergency Section
+            ProfileSectionHeader("SEGURANÇA E EMERGÊNCIA", Icons.Default.Emergency)
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                color = MedicleanTeal.copy(alpha = 0.05f),
+                border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
+            ) {
+                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    PremiumTextField(
+                        value = emergency,
+                        onValueChange = { emergency = it },
+                        label = "Contato de Emergência",
+                        icon = Icons.Default.Emergency,
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Phone
+                    )
+                    
+                    Text(
+                        text = "Este contato será exibido em situações críticas para facilitar o socorro médico.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MedicleanDarkGreen.copy(alpha = 0.5f),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            // AI Settings Section
+            ProfileSectionHeader("INTELIGÊNCIA ARTIFICIAL", Icons.Default.AutoAwesome)
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+                shadowElevation = 2.dp
+            ) {
+                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    PremiumTextField(
+                        value = geminiApiKey,
+                        onValueChange = { geminiApiKey = it },
+                        label = "Chave de API Gemini",
+                        icon = Icons.Default.VpnKey,
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Password
+                    )
+                    
+                    Text(
+                        text = "A chave de API permite que o assistente analise seus medicamentos.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MedicleanDarkGreen.copy(alpha = 0.4f),
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    androidx.compose.material3.HorizontalDivider(color = MedicleanTeal.copy(alpha = 0.1f))
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Proteção Biométrica",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Black,
+                                color = MedicleanDarkGreen
+                            )
+                            Text(
+                                text = "Exigir digital ao abrir o app",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MedicleanDarkGreen.copy(alpha = 0.5f),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Switch(
+                            checked = isBiometricEnabled,
+                            onCheckedChange = { isBiometricEnabled = it },
+                            colors = SwitchDefaults.colors(checkedTrackColor = MedicleanTeal)
+                        )
+                    }
+                }
+            }
+
+            Button(
+                onClick = { 
+                    viewModel.updateProfile(name, weight, height, emergency, geminiApiKey, isBiometricEnabled)
+                    onBack()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal)
+            ) {
+                Icon(Icons.Default.Save, contentDescription = null)
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("SALVAR ALTERAÇÕES", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+            }
+
+            // Footer
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Versão 2.1.0 • RemeDio Certo Premium",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MedicleanDarkGreen.copy(alpha = 0.3f),
+                    fontWeight = FontWeight.Black
+                )
+                TextButton(onClick = { 
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://sites.google.com/view/projectr-privacy-policy"))
+                    context.startActivity(intent)
+                }) {
+                    Text("Política de Privacidade", style = MaterialTheme.typography.labelSmall, color = MedicleanTeal, fontWeight = FontWeight.Black)
                 }
             }
         }
     }
 }
+
+@Composable
+fun ProfileSectionHeader(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 4.dp)) {
+        Icon(icon, contentDescription = null, tint = MedicleanTeal, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(10.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 1.sp),
+            fontWeight = FontWeight.Black,
+            color = MedicleanTeal
+        )
+    }
+}
+
+@Composable
+private fun PremiumTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    keyboardType: androidx.compose.ui.text.input.KeyboardType = androidx.compose.ui.text.input.KeyboardType.Text
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label, color = MedicleanDarkGreen.copy(alpha = 0.4f), fontWeight = FontWeight.Bold) },
+        modifier = modifier.fillMaxWidth(),
+        leadingIcon = icon?.let { { Icon(it, contentDescription = null, tint = MedicleanTeal) } },
+        shape = RoundedCornerShape(18.dp),
+        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = keyboardType),
+        visualTransformation = if (keyboardType == androidx.compose.ui.text.input.KeyboardType.Password) androidx.compose.ui.text.input.PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = MedicleanDarkGreen,
+            unfocusedTextColor = MedicleanDarkGreen,
+            focusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+            unfocusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+            focusedBorderColor = MedicleanTeal,
+            unfocusedBorderColor = Color.Transparent,
+            cursorColor = MedicleanTeal
+        )
+    )
+}
+
