@@ -1,4 +1,4 @@
-﻿package com.zmstore.projectr.ui.camera
+package com.zmstore.projectr.ui.camera
 
 import android.util.Log
 import androidx.annotation.OptIn
@@ -109,16 +109,10 @@ fun CameraScreen(
                                                     bestName
                                                 }
 
-                                                if (fullMatch.isNotBlank()) {
-                                                    if (fullMatch == lastCandidate) {
-                                                        recognitionCount++
-                                                        if (recognitionCount >= 5) {
-                                                            detectedText = fullMatch
-                                                        }
-                                                    } else {
-                                                        lastCandidate = fullMatch
-                                                        recognitionCount = 1
-                                                    }
+                                                if (fullMatch.isNotBlank() && detectedText.isBlank()) {
+                                                    // Accept the first valid match instantly to avoid getting stuck "searching"
+                                                    // User can always re-scan if it read slightly wrong
+                                                    detectedText = fullMatch
                                                 }
                                             }
                                         }
@@ -292,13 +286,23 @@ fun CameraScreen(
                         }
                     }
 
-                    Button(
-                        onClick = { onTextDetected(detectedText) },
-                        modifier = Modifier.fillMaxWidth().height(64.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal)
-                    ) {
-                        Text("CONFIRMAR MEDICAMENTO", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Button(
+                            onClick = { detectedText = "" },
+                            modifier = Modifier.weight(1f).height(64.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                        ) {
+                            Text("REFAZER", fontWeight = FontWeight.Black, color = Color.White)
+                        }
+                        Button(
+                            onClick = { onTextDetected(detectedText) },
+                            modifier = Modifier.weight(1.5f).height(64.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal)
+                        ) {
+                            Text("CONFIRMAR", fontWeight = FontWeight.Black)
+                        }
                     }
                 } else {
                     Surface(
