@@ -101,6 +101,12 @@ class MainViewModel @Inject constructor(
         takenCount to activeMeds.size
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0 to 0)
 
+    private val _stockAlert = kotlinx.coroutines.flow.MutableSharedFlow<String>()
+    val stockAlert = _stockAlert.asSharedFlow()
+
+    private val _streakAlert = kotlinx.coroutines.flow.MutableSharedFlow<String>()
+    val streakAlert = _streakAlert.asSharedFlow()
+
     init {
         viewModelScope.launch {
             _isLoading.value = false
@@ -299,9 +305,29 @@ class MainViewModel @Inject constructor(
                 val updatedStock = if (med.stockCount > 0) med.stockCount - 1 else 0
                 val updatedMed = med.copy(
                     lastTakenTimestamp = System.currentTimeMillis(),
-                    stockCount = updatedStock
+                    stockCount = updatedStock,
+                    streakCount = med.streakCount + 1
                 )
                 repository.updateMedication(updatedMed)
+                
+                // Alerta de Estoque Crítico
+                if (updatedStock <= 3 && updatedStock > 0) {
+                    viewModelScope.launch {
+                        _stockAlert.emit("Estoque Crítico: Restam apenas $updatedStock doses de ${med.name}!")
+                    }
+                } else if (updatedStock == 0 && med.stockCount > 0) {
+                    viewModelScope.launch {
+                        _stockAlert.emit("🚨 Alerta: O medicamento ${med.name} acabou!")
+                    }
+                }
+
+                // Alerta de Sequência (Gamificação)
+                if (updatedMed.streakCount > 0 && updatedMed.streakCount % 7 == 0) {
+                    viewModelScope.launch {
+                        _streakAlert.emit("Incrível! Você completou uma sequência de ${updatedMed.streakCount} doses de ${med.name}! 🏆")
+                    }
+                }
+
                 try {
                     MedicationAlarmHelper.scheduleAlarm(application, updatedMed)
                 } catch (e: Exception) {

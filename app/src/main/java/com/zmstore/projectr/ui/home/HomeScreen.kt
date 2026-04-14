@@ -1,8 +1,7 @@
 package com.zmstore.projectr.ui.home
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zmstore.projectr.R
+import kotlinx.coroutines.launch
 import com.zmstore.projectr.data.model.Medication
 import com.zmstore.projectr.data.model.Profile
 import com.zmstore.projectr.ui.MainViewModel
@@ -51,6 +51,23 @@ fun HomeScreen(
     var medicationToConfirm by remember { mutableStateOf<Medication?>(null) }
     var confirmationNote by remember { mutableStateOf("") }
     var showProfileMenu by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        viewModel.stockAlert.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.streakAlert.collect { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Long
+            )
+        }
+    }
 
     val speechRecognizerLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
@@ -136,7 +153,8 @@ fun HomeScreen(
                     modifier = Modifier.size(28.dp)
                 )
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { scaffoldPadding ->
         Box(
             modifier = Modifier
@@ -527,16 +545,31 @@ fun MedicationCard(
                         Spacer(modifier = Modifier.width(16.dp))
                         
                         Column {
-                            Text(
-                                text = medication.name,
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.sharedElement(
-                                    rememberSharedContentState(key = "medication_title_${medication.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = medication.name,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.sharedElement(
+                                        rememberSharedContentState(key = "medication_title_${medication.id}"),
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    )
                                 )
-                            )
+                                if (medication.streakCount > 0) {
+                                    Surface(
+                                        color = Color(0xFFFF9800).copy(alpha = 0.1f),
+                                        shape = RoundedCornerShape(8.dp),
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    ) {
+                                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)) {
+                                            Text("🔥", fontSize = 10.sp)
+                                            Spacer(Modifier.width(2.dp))
+                                            Text(medication.streakCount.toString(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color(0xFFFF9800))
+                                        }
+                                    }
+                                }
+                            }
                             Text(
                                 text = medication.dosage,
                                 style = MaterialTheme.typography.bodyMedium,

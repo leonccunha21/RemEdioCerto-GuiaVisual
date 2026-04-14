@@ -21,5 +21,6 @@ data class Medication(
     val customTimes: String? = null, // comma-separated HH:mm times
     val profileId: Int = 0, // Default profile
     val iconType: String = "pill", // pill, capsule, drops, liquid
-    val iconColor: Int = 0xFF008080.toInt() // MedicleanTeal
+    val iconColor: Int = 0xFF008080.toInt(), // MedicleanTeal
+    val streakCount: Int = 0
 )

@@ -8,13 +8,13 @@ import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,6 +36,7 @@ import com.zmstore.projectr.data.model.Medication
 import com.zmstore.projectr.receiver.AlarmReceiver
 import com.zmstore.projectr.ui.theme.*
 import java.util.concurrent.TimeUnit
+import com.zmstore.projectr.util.TtsHelper
 
 import androidx.compose.ui.res.stringResource
 import com.zmstore.projectr.R
@@ -415,7 +416,31 @@ fun MedicationDetailScreen(
                 }
 
                 AnimatedVisibility(visible = showOptionalFields) {
+                    val ttsHelper = remember { TtsHelper(context) }
+                    DisposableEffect(Unit) {
+                        onDispose { ttsHelper.shutdown() }
+                    }
+
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Button(
+                            onClick = {
+                                val textToSpeak = buildString {
+                                    append("Informações sobre $name. ")
+                                    if (purpose.isNotBlank()) append("Serve para: $purpose. ")
+                                    if (instructions.isNotBlank()) append("Como usar: $instructions. ")
+                                    if (alerts.isNotBlank()) append("Atenção: $alerts. ")
+                                }
+                                ttsHelper.speak(textToSpeak)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = MedicleanTeal.copy(alpha = 0.1f), contentColor = MedicleanTeal),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Icon(Icons.Default.VolumeUp, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Ouvir Instruções (IA)", fontWeight = FontWeight.Bold)
+                        }
+
                         ResearchInfoField(label = "Para que serve", value = purpose, onValueChange = { purpose = it })
                         ResearchInfoField(label = "Como tomar / Instruções", value = instructions, onValueChange = { instructions = it })
                         ResearchInfoField(label = "Efeitos Colaterais", value = sideEffects, onValueChange = { sideEffects = it })
@@ -469,9 +494,10 @@ fun MedicationDetailScreen(
                 ) {
                     Text(if (medicationId == -1) "SALVAR MEDICAMENTO" else "SALVAR ALTERAÇÕES", fontWeight = FontWeight.ExtraBold, color = Color.White)
                 }
-            }
         }
     }
+}
+}
 }
 
 @Composable

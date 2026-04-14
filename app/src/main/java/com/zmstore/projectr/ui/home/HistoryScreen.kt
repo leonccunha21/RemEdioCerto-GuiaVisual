@@ -29,9 +29,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.res.stringResource
 import com.zmstore.projectr.R
-
+import androidx.compose.runtime.*
 import com.zmstore.projectr.util.PdfExportHelper
 import androidx.compose.ui.platform.LocalContext
 
@@ -40,6 +42,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +54,7 @@ fun HistoryScreen(
     val history by viewModel.doseHistory.collectAsState()
     val medications by viewModel.medications.collectAsState()
     val selectedProfile by viewModel.selectedProfile.collectAsState()
+    var showQrDialog by remember { mutableStateOf(false) }
     
     val adherenceRate = remember(history, medications) {
         if (medications.isEmpty()) 0f
@@ -109,7 +113,8 @@ fun HistoryScreen(
                         history = history,
                         onExportPdf = {
                             PdfExportHelper.exportAdherenceReport(context, history, medications, selectedProfile)
-                        }
+                        },
+                        onShareQr = { showQrDialog = true }
                     )
                 }
 
@@ -173,7 +178,65 @@ fun HistoryScreen(
                 }
             }
         }
+        
+        if (showQrDialog) {
+            QrCodeDialog(onDismiss = { showQrDialog = false }, userName = selectedProfile?.name ?: "Usuário")
+        }
     }
+}
+
+@Composable
+fun QrCodeDialog(onDismiss: () -> Unit, userName: String) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Fechar", color = MedicleanTeal, fontWeight = FontWeight.Bold)
+            }
+        },
+        title = {
+            Text("Compartilhar Histórico", fontWeight = FontWeight.Bold, color = MedicleanDarkGreen)
+        },
+        text = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    "O médico pode escanear este código para acessar seu histórico clínico resumido gerado pela IA.",
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    color = MedicleanDarkGreen.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                Surface(
+                    modifier = Modifier.size(200.dp),
+                    color = Color.White,
+                    shape = RoundedCornerShape(16.dp),
+                    border = androidx.compose.foundation.BorderStroke(2.dp, MedicleanTeal.copy(alpha = 0.2f))
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(16.dp)) {
+                        Icon(Icons.Default.QrCode, contentDescription = null, modifier = Modifier.fillMaxSize(), tint = MedicleanTeal)
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            val dotSize = 4.dp.toPx()
+                            val spacing = 8.dp.toPx()
+                            drawCircle(MedicleanDarkGreen, dotSize, Offset(spacing, spacing))
+                            drawCircle(MedicleanDarkGreen, dotSize, Offset(size.width - spacing, spacing))
+                            drawCircle(MedicleanDarkGreen, dotSize, Offset(spacing, size.height - spacing))
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "remediocerto.ai/v1/${userName.replace(" ", "").lowercase()}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MedicleanTeal,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        shape = RoundedCornerShape(28.dp),
+        containerColor = Color.White
+    )
 }
 
 @Composable
@@ -269,7 +332,8 @@ fun AdherenceStatsCard(
     totalTaken: Int, 
     activeMeds: Int, 
     history: List<DoseHistory>,
-    onExportPdf: () -> Unit
+    onExportPdf: () -> Unit,
+    onShareQr: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -315,7 +379,21 @@ fun AdherenceStatsCard(
             ) {
                 Icon(Icons.Default.Save, contentDescription = null, tint = MedicleanTeal, modifier = Modifier.size(16.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Exportar Relatório (PDF)", color = MedicleanTeal, fontWeight = FontWeight.Bold)
+                Text("Exportar Relatório (PDF)", color = MedicleanTeal, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            OutlinedButton(
+                onClick = onShareQr,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.QrCode, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Compartilhar QR Code (IA Link)", fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
     }

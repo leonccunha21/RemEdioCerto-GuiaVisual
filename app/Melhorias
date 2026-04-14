@@ -10,9 +10,14 @@
 *   **📷 OCR Inteligente** (Abril 2026): Captura de nome e miligramagem via câmera com animação de scanner em tempo real.
 *   **🌓 Refinamento de Tema Escuro** (Abril 2026): Implementada paleta 'Deep Teal-Grey' premium, reduzindo o cansaço visual e tornando o app mais elegante.
 *   **🎙️ Registro por Voz** (Abril 2026): Confirmação de dose mãos-livres via comando de voz (botão de microfone no Dashboard).
+*   **🚨 Alertas de Estoque & Gamificação** (Abril 2026): Notificações proativas de estoque baixo e sistema de sequências (🔥 Streaks) para incentivar a adesão.
+*   **🔊 Leitura de Bula (TTS)** (Abril 2026): Novo botão "Ouvir Instruções" que utiliza IA para ler um resumo do medicamento em voz alta.
+*   **🩺 QR Code de Compartilhamento** (Abril 2026): Geração de código para médicos acessarem o histórico clínico resumido.
+*   **🕒 Reagendamento Inteligente** (Abril 2026): Lógica que ajusta o próximo alarme com base no horário real em que a última dose foi tomada.
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
-#### ⚙️ Funcionalidades Avançadas & Robustez
-*   **📶 Sincronização em Nuvem (Multi-dispositivo)**: Implementar Firebase para que cuidadores e familiares compartilhem o status das doses.
-*   **🚨 Alerta de Estoque Crítico**: Notificação proativa quando o `stockCount` chegar a um limite crítico.
+#### ⚙️ Funcionalidades Futuras (Próxima Versão)
+*   **📶 Sincronização em Nuvem Full**: Implementar o backend completo para espelhamento em tempo real entre dispositivos.
+*   **👨‍👩‍👧‍👦 Modo Cuidador Remoto**: Notificar outros dispositivos quando uma dose crítica for esquecida.
+*   **📈 Análise de Tendências IA**: Gemini analisando o histórico de meses para sugerir padrões de bem-estar.
