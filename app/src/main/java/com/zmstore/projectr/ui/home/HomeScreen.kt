@@ -450,7 +450,7 @@ fun MedicationCard(
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = MedicleanMint.copy(alpha = 0.4f),
+                            color = Color(medication.iconColor).copy(alpha = 0.1f),
                             modifier = Modifier
                                 .size(56.dp)
                                 .sharedElement(
@@ -460,9 +460,14 @@ fun MedicationCard(
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
-                                    imageVector = Icons.Default.Medication,
+                                    imageVector = when(medication.iconType) {
+                                        "capsule" -> Icons.Default.Adjust
+                                        "drops" -> Icons.Default.WaterDrop
+                                        "liquid" -> Icons.Default.Vaccines
+                                        else -> Icons.Default.Medication
+                                    },
                                     contentDescription = null,
-                                    tint = MedicleanTeal,
+                                    tint = Color(medication.iconColor),
                                     modifier = Modifier.size(32.dp)
                                 )
                             }

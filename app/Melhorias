@@ -5,11 +5,11 @@
 *   **📊 Dashboard de Adesão** (Abril 2026): Novo componente visual na Home com progresso diário circular.
 *   **🤖 Pesquisa com IA (Gemini)** (Abril 2026): Preenchimento automático de campos avançados (bula) e aviso de interações medicamentosas.
 *   **🔒 Proteção Biométrica** (Abril 2026): Suporte a desbloqueio via digital/face ao abrir o aplicativo.
+*   **💊 Visual Pills Customizer** (Abril 2026): Personalização de ícones (formato e cor) para identificação visual rápida.
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
 #### 🎨 Experiência do Usuário (UI/UX Premium)
-*   **💊 Visual Pills Customizer**: Permitir que o usuário escolha o formato (cápsula, comprimido redondo, gota) e a cor do ícone no card para identificação visual imediata.
 *   **🌓 Refinamento de Tema Escuro**: Ajustar o `Dark Mode` para usar tons de cinza azulado profundo em vez de preto puro.
 
 #### 🧠 Inteligência e Automação (IA & Android)

@@ -11,7 +11,7 @@ import com.zmstore.projectr.data.model.Profile
 
 @Database(
     entities = [Medication::class, DoseHistory::class, Profile::class], 
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

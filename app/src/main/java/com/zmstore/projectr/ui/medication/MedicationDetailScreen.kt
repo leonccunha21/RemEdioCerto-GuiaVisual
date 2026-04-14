@@ -68,6 +68,8 @@ fun MedicationDetailScreen(
     var isActive by remember { mutableStateOf(true) }
     var profileId by remember { mutableStateOf(0) }
     var lastTakenTimestamp by remember { mutableLongStateOf(0L) }
+    var iconType by remember { mutableStateOf("pill") }
+    var iconColor by remember { mutableIntStateOf(0xFF008080.toInt()) }
 
     val aiResult by viewModel.aiResearchResult.collectAsState()
     val isAiSearching by viewModel.isAiSearching.collectAsState()
@@ -123,6 +125,8 @@ fun MedicationDetailScreen(
                 isActive = it.isActive
                 profileId = it.profileId
                 lastTakenTimestamp = it.lastTakenTimestamp
+                iconType = it.iconType
+                iconColor = it.iconColor
             }
         }
     }
@@ -175,9 +179,14 @@ fun MedicationDetailScreen(
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
-                                    imageVector = Icons.Default.Medication,
+                                    imageVector = when(iconType) {
+                                        "capsule" -> Icons.Default.Adjust
+                                        "drops" -> Icons.Default.WaterDrop
+                                        "liquid" -> Icons.Default.Vaccines
+                                        else -> Icons.Default.Medication
+                                    },
                                     contentDescription = null,
-                                    tint = MedicleanTeal,
+                                    tint = Color(iconColor),
                                     modifier = Modifier.size(48.dp)
                                 )
                             }
@@ -235,8 +244,42 @@ fun MedicationDetailScreen(
                         }
                     }
 
-                    val isAiSearching by viewModel.isAiSearching.collectAsState()
-                    val userPrefs by viewModel.userPreferences.collectAsState()
+                    // Pill Customizer
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text("Personalização Visual", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MedicleanTeal)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                            val types = listOf("pill" to Icons.Default.Medication, "capsule" to Icons.Default.Adjust, "drops" to Icons.Default.WaterDrop, "liquid" to Icons.Default.Vaccines)
+                            items(types) { (type, icon) ->
+                                FilterChip(
+                                    selected = iconType == type,
+                                    onClick = { iconType = type },
+                                    label = { Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                                    colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MedicleanTeal, selectedLabelColor = Color.White)
+                                )
+                            }
+                        }
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            val colors = listOf(0xFF008080.toInt(), 0xFFE91E63.toInt(), 0xFF2196F3.toInt(), 0xFF4CAF50.toInt(), 0xFFFF9800.toInt(), 0xFF9C27B0.toInt())
+                            items(colors) { color ->
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .background(Color(color), CircleShape)
+                                        .clickable { iconColor = color }
+                                        .padding(4.dp)
+                                ) {
+                                    if (iconColor == color) {
+                                        Icon(Icons.Default.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     Column(modifier = Modifier.fillMaxWidth()) {
                         OutlinedTextField(
@@ -404,7 +447,9 @@ fun MedicationDetailScreen(
                             category = category,
                             customTimes = if (useCustomTimes) customTimes.trim() else null,
                             profileId = profileId,
-                            lastTakenTimestamp = lastTakenTimestamp
+                            lastTakenTimestamp = lastTakenTimestamp,
+                            iconType = iconType,
+                            iconColor = iconColor
                         )
                         onSave(medication)
                     },
