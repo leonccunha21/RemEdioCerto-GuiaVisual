@@ -6,6 +6,7 @@
 *   **🤖 Pesquisa com IA (Gemini)** (Abril 2026): Preenchimento automático de campos avançados (bula) e aviso de interações medicamentosas.
 *   **🔒 Proteção Biométrica** (Abril 2026): Suporte a desbloqueio via digital/face ao abrir o aplicativo.
 *   **💊 Visual Pills Customizer** (Abril 2026): Personalização de ícones (formato e cor) para identificação visual rápida.
+*   **📅 Exportação de Relatório Médico** (Abril 2026): Geração de PDF profissional com histórico de doses para envio a médicos.
 
 ### 🚀 Sugestões de Melhorias Profissionais (Roteiro de Evolução)
 
@@ -19,4 +20,3 @@
 #### ⚙️ Funcionalidades Avançadas & Robustez
 *   **📶 Sincronização em Nuvem (Multi-dispositivo)**: Implementar Firebase para que cuidadores e familiares compartilhem o status das doses.
 *   **🚨 Alerta de Estoque Crítico**: Notificação proativa quando o `stockCount` chegar a um limite crítico.
-*   **📅 Exportação de Relatório Médico**: Gerar um PDF profissional com o histórico de adesão para enviar ao médico via WhatsApp.

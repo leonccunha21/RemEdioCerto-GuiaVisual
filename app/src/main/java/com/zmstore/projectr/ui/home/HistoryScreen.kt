@@ -108,7 +108,7 @@ fun HistoryScreen(
                         activeMeds = medications.count { it.isActive },
                         history = history,
                         onExportPdf = {
-                            PdfExportHelper.exportAdherenceReport(context, history, medications)
+                            PdfExportHelper.exportAdherenceReport(context, history, medications, selectedProfile)
                         }
                     )
                 }

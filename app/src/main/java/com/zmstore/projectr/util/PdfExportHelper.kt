@@ -21,67 +21,156 @@ object PdfExportHelper {
     fun exportAdherenceReport(
         context: Context,
         history: List<DoseHistory>,
-        medications: List<Medication>
+        medications: List<Medication>,
+        profile: com.zmstore.projectr.data.model.Profile?
     ) {
         val pdfDocument = PdfDocument()
-        // ... (existing paint setup)
-        val paint = Paint()
+        
+        // Colors & Paints
+        val tealColor = 0xFF008080.toInt()
+        val darkGreenColor = 0xFF1B3D3D.toInt()
+        val lightGrayColor = 0xFFF5F5F5.toInt()
+
         val titlePaint = Paint().apply {
-            textSize = 24f
+            color = Color.WHITE
+            textSize = 28f
             isFakeBoldText = true
+            isAntiAlias = true
         }
-        val textPaint = Paint().apply {
-            textSize = 14f
-        }
+        
         val headerPaint = Paint().apply {
-            textSize = 16f
+            color = tealColor
+            textSize = 18f
             isFakeBoldText = true
+            isAntiAlias = true
         }
 
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 size
-        val page = pdfDocument.startPage(pageInfo)
-        val canvas: Canvas = page.canvas
+        val textPaint = Paint().apply {
+            color = darkGreenColor
+            textSize = 12f
+            isAntiAlias = true
+        }
 
-        var y = 40f
-        canvas.drawText("Relatório de Adesão - ProjectR", 40f, y, titlePaint)
+        val labelPaint = Paint().apply {
+            color = Color.GRAY
+            textSize = 10f
+            isAntiAlias = true
+        }
+
+        val bgPaint = Paint().apply {
+            color = tealColor
+            style = Paint.Style.FILL
+        }
+
+        val linePaint = Paint().apply {
+            color = Color.LTGRAY
+            strokeWidth = 1f
+        }
+
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        var page = pdfDocument.startPage(pageInfo)
+        var canvas = page.canvas
+
+        // Header Background
+        canvas.drawRect(0f, 0f, 595f, 120f, bgPaint)
+        canvas.drawText("RemÉdio Certo", 40f, 60f, titlePaint)
+        
+        titlePaint.textSize = 14f
+        titlePaint.isFakeBoldText = false
+        canvas.drawText("Relatório Médico de Adesão", 40f, 85f, titlePaint)
+        
+        // Profile Info
+        var y = 150f
+        canvas.drawText("PACIENTE:", 40f, y, labelPaint)
+        y += 20f
+        headerPaint.textSize = 20f
+        canvas.drawText(profile?.name ?: "Usuário Principal", 40f, y, headerPaint)
+        
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        canvas.drawText("Data de Emissão: ${dateFormat.format(Date())}", 350f, y - 5f, labelPaint)
         
         y += 40f
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-        canvas.drawText("Data do Relatório: ${dateFormat.format(Date())}", 40f, y, textPaint)
+        canvas.drawLine(40f, y, 555f, y, linePaint)
+        y += 30f
+        
+        // Medication Summary
+        headerPaint.textSize = 16f
+        canvas.drawText("RESUMO DOS MEDICAMENTOS ATIVOS", 40f, y, headerPaint)
+        y += 25f
+        
+        medications.filter { it.isActive }.forEach { med ->
+            if (y > 780) {
+                pdfDocument.finishPage(page)
+                page = pdfDocument.startPage(pageInfo)
+                canvas = page.canvas
+                y = 40f
+            }
+            
+            canvas.drawRect(40f, y - 15f, 555f, y + 25f, Paint().apply { color = lightGrayColor })
+            textPaint.isFakeBoldText = true
+            canvas.drawText(med.name, 50f, y + 5f, textPaint)
+            textPaint.isFakeBoldText = false
+            canvas.drawText("Dose: ${med.dosage}", 50f, y + 20f, textPaint)
+            
+            val takenCount = history.count { it.medicationId == med.id }
+            canvas.drawText("Doses Confirmadas: $takenCount", 380f, y + 12f, textPaint)
+            
+            y += 50f
+        }
         
         y += 30f
-        canvas.drawText("Resumo de Medicamentos:", 40f, y, headerPaint)
+        headerPaint.textSize = 16f
+        canvas.drawText("HISTÓRICO DETALHADO DE DOSES", 40f, y, headerPaint)
+        y += 25f
         
-        y += 20f
-        medications.forEach { med ->
-            val dosesTaken = history.count { it.medicationId == med.id }
-            canvas.drawText("- ${med.name}: $dosesTaken doses confirmadas", 60f, y, textPaint)
-            y += 20f
-        }
+        // Table Headers
+        canvas.drawRect(40f, y - 15f, 555f, y + 10f, bgPaint)
+        titlePaint.textSize = 10f
+        canvas.drawText("DATA / HORA", 50f, y, titlePaint)
+        canvas.drawText("MEDICAMENTO", 180f, y, titlePaint)
+        canvas.drawText("STATUS", 420f, y, titlePaint)
+        canvas.drawText("NOTAS", 500f, y, titlePaint)
+        y += 25f
 
-        y += 20f
-        canvas.drawText("Histórico Recente (Últimas 20 doses):", 40f, y, headerPaint)
-        y += 20f
-        
-        history.takeLast(20).reversed().forEach { dose ->
-            val dateStr = dateFormat.format(Date(dose.timestamp))
-            canvas.drawText("$dateStr - ${dose.medicationName} ${if (dose.note != null) " (Nota: ${dose.note})" else ""}", 60f, y, textPaint)
-            y += 20f
-            
-            if (y > 800) { 
-                return@forEach 
+        history.sortedByDescending { it.timestamp }.forEach { dose ->
+            if (y > 780) {
+                pdfDocument.finishPage(page)
+                page = pdfDocument.startPage(pageInfo)
+                canvas = page.canvas
+                
+                // Re-draw table headers on new page
+                y = 40f
+                canvas.drawRect(40f, y - 15f, 555f, y + 10f, bgPaint)
+                canvas.drawText("DATA / HORA", 50f, y, titlePaint)
+                canvas.drawText("MEDICAMENTO", 180f, y, titlePaint)
+                canvas.drawText("STATUS", 420f, y, titlePaint)
+                canvas.drawText("NOTAS", 500f, y, titlePaint)
+                y += 25f
             }
+            
+            val dateStr = SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault()).format(Date(dose.timestamp))
+            canvas.drawText(dateStr, 50f, y, textPaint)
+            canvas.drawText(dose.medicationName, 180f, y, textPaint)
+            canvas.drawText("TOMADO", 420f, y, textPaint)
+            canvas.drawText(dose.note ?: "-", 500f, y, textPaint)
+            
+            canvas.drawLine(40f, y + 5f, 555f, y + 5f, linePaint)
+            y += 20f
         }
+        
+        // Footer
+        val footerY = 820f
+        canvas.drawText("Documento gerado automaticamente pelo aplicativo RemÉdio Certo Guia Visual.", 40f, footerY, labelPaint)
+        canvas.drawText("Página 1", 530f, footerY, labelPaint)
 
         pdfDocument.finishPage(page)
 
-        val fileName = "Relatorio_Adesao_${System.currentTimeMillis()}.pdf"
-        val file = File(context.cacheDir, fileName) // Use cache for easier sharing
+        val fileName = "Relatorio_${profile?.name ?: "Usuario"}_${System.currentTimeMillis()}.pdf"
+        val file = File(context.cacheDir, fileName)
 
         try {
             pdfDocument.writeTo(FileOutputStream(file))
             
-            // Share the PDF
             val uri = FileProvider.getUriForFile(
                 context,
                 "${context.packageName}.provider",
