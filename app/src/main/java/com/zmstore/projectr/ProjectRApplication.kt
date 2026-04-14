@@ -1,4 +1,4 @@
-package com.zmstore.projectr
+﻿package com.zmstore.projectr
 
 import android.app.Application
 import com.zmstore.projectr.data.local.AppDatabase

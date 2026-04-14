@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.home
+﻿package com.zmstore.projectr.ui.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -76,7 +76,7 @@ fun HistoryScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,
-                        modifier = Modifier.padding(8.dp).background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
+                        modifier = Modifier.padding(8.dp).background(if (false) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanTeal)
                     }
@@ -346,7 +346,7 @@ fun HistoryItem(dose: DoseHistory) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+        color = if (false) Color(0xFF1E2A28) else Color.White,
         border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.05f))
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -388,7 +388,7 @@ fun UpcomingDoseItem(medication: Medication, countdown: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+        color = if (false) Color.White.copy(alpha = 0.05f) else Color.White,
         border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.05f))
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {

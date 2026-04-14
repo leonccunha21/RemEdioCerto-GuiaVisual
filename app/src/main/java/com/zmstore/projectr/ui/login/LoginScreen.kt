@@ -69,17 +69,10 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = if (isSystemInDarkTheme()) 
-                        listOf(Color(0xFF0F1716), Color(0xFF17201F))
-                    else 
-                        listOf(MedicleanWhite, MedicleanMint)
-                )
-            )
+            .background(Color.White)
     ) {
         // Decorative background elements
-        if (!isSystemInDarkTheme()) {
+        if (!false) {
             Box(
                 modifier = Modifier
                     .size(300.dp)
@@ -420,8 +413,8 @@ fun PremiumTextField(
             unfocusedTextColor = MedicleanDarkGreen,
             focusedBorderColor = MedicleanTeal,
             unfocusedBorderColor = MedicleanTeal.copy(alpha = 0.2f),
-            focusedContainerColor = if(isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
-            unfocusedContainerColor = if(isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+            focusedContainerColor = if(false) Color.White.copy(alpha = 0.05f) else Color.White,
+            unfocusedContainerColor = if(false) Color.White.copy(alpha = 0.05f) else Color.White,
             focusedLabelColor = MedicleanTeal,
             unfocusedLabelColor = MedicleanDarkGreen.copy(alpha = 0.4f)
         )

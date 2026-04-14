@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.theme
+﻿package com.zmstore.projectr.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -48,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ProjectRTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     dynamicColor: Boolean = false, // Desabilitado para manter a identidade visual Mediclean
     content: @Composable () -> Unit
 ) {

@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.medication
+﻿package com.zmstore.projectr.ui.medication
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -81,7 +81,7 @@ fun MedicationListScreen(
                         onClick = onBack,
                         modifier = Modifier
                             .padding(8.dp)
-                            .background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp))
+                            .background(if (false) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp))
                             .size(40.dp)
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = MedicleanTeal)
@@ -104,8 +104,8 @@ fun MedicationListScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = MedicleanDarkGreen,
                     unfocusedTextColor = MedicleanDarkGreen,
-                    focusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
-                    unfocusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+                    focusedContainerColor = if (false) Color.White.copy(alpha = 0.05f) else Color.White,
+                    unfocusedContainerColor = if (false) Color.White.copy(alpha = 0.05f) else Color.White,
                     focusedBorderColor = MedicleanTeal,
                     unfocusedBorderColor = Color.Transparent,
                     cursorColor = MedicleanTeal
@@ -135,7 +135,7 @@ fun MedicationListScreen(
                             onClick = { onNavigateToDetail(med.id, med.name) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(24.dp),
-                            color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanWhite,
+                            color = if (false) Color(0xFF1E2A28) else MedicleanWhite,
                             shadowElevation = 4.dp,
                             border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.05f))
                         ) {

@@ -1,4 +1,4 @@
-package com.zmstore.projectr.receiver
+﻿package com.zmstore.projectr.receiver
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

@@ -1,4 +1,4 @@
-package com.zmstore.projectr.util
+﻿package com.zmstore.projectr.util
 
 import android.content.Context
 import android.graphics.Canvas

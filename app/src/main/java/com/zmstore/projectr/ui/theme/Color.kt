@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.theme
+﻿package com.zmstore.projectr.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -20,4 +20,4 @@ val GradientEnd = Color(0xFF00796B)
 // Surface and Glassmorphism (keeping existing or refining)
 val GlassWhite = Color(0xE6FFFFFF)
 val GlassTeal = Color(0x3300A79D)
-val CardShadow = Color(0x1A000000)
+val CardShadow = Color(0x1A000000)

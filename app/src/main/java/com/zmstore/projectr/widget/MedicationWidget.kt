@@ -1,4 +1,4 @@
-package com.zmstore.projectr.widget
+﻿package com.zmstore.projectr.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider

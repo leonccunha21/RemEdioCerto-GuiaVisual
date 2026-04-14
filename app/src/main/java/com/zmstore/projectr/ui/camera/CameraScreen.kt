@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.camera
+﻿package com.zmstore.projectr.ui.camera
 
 import android.util.Log
 import androidx.annotation.OptIn

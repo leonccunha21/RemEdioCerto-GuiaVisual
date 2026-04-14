@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.home
+﻿package com.zmstore.projectr.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
@@ -159,7 +159,7 @@ fun HomeScreen(
                     Text("CANCELAR", color = MedicleanDarkGreen.copy(alpha = 0.5f), fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+            containerColor = if (false) Color(0xFF1E2A28) else Color.White,
             shape = RoundedCornerShape(32.dp),
             tonalElevation = 0.dp
         )
@@ -298,7 +298,7 @@ fun HealthDashboard(adherence: Pair<Int, Int>, onVoiceClick: () -> Unit) {
             .padding(16.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanTeal
+            containerColor = if (false) Color(0xFF1E2A28) else MedicleanTeal
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -408,7 +408,7 @@ fun QuickActionCard(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(20.dp),
-        color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else MedicleanWhite,
+        color = if (false) Color(0xFF1E2A28) else MedicleanWhite,
         modifier = modifier.height(70.dp),
         shadowElevation = 4.dp
     ) {
@@ -454,9 +454,9 @@ fun HomeHeader(
         IconButton(
             onClick = onOpenDrawer,
             modifier = Modifier
-                .background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.08f) else Color.White, RoundedCornerShape(16.dp))
+                .background(if (false) Color.White.copy(alpha = 0.08f) else Color.White, RoundedCornerShape(16.dp))
                 .size(48.dp)
-                .border(1.dp, if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.Transparent, RoundedCornerShape(16.dp))
+                .border(1.dp, if (false) Color.White.copy(alpha = 0.1f) else Color.Transparent, RoundedCornerShape(16.dp))
         ) {
             Icon(Icons.Default.Menu, contentDescription = "Menu", tint = MedicleanTeal, modifier = Modifier.size(26.dp))
         }
@@ -480,7 +480,7 @@ fun HomeHeader(
         Surface(
             onClick = onProfileClick,
             shape = RoundedCornerShape(16.dp),
-            color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.08f) else Color.White,
+            color = if (false) Color.White.copy(alpha = 0.08f) else Color.White,
             modifier = Modifier.size(48.dp),
             shadowElevation = 4.dp,
             border = BorderStroke(2.dp, selectedProfile?.let { Color(it.color) } ?: MedicleanTeal)
@@ -517,8 +517,8 @@ fun HomeSearchSection(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = MedicleanDarkGreen,
                 unfocusedTextColor = MedicleanDarkGreen,
-                focusedContainerColor = if (isSystemInDarkTheme()) Color(0xFF1A2624) else MedicleanWhite,
-                unfocusedContainerColor = if (isSystemInDarkTheme()) Color(0xFF1A2624) else MedicleanWhite,
+                focusedContainerColor = if (false) Color(0xFF1A2624) else MedicleanWhite,
+                unfocusedContainerColor = if (false) Color(0xFF1A2624) else MedicleanWhite,
                 focusedBorderColor = MedicleanTeal,
                 unfocusedBorderColor = Color.Transparent,
                 cursorColor = MedicleanTeal
@@ -547,7 +547,7 @@ fun HomeSearchSection(
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MedicleanTeal,
                         selectedLabelColor = Color.White,
-                        containerColor = if (isSystemInDarkTheme()) Color(0xFF1A1A1A) else MedicleanWhite,
+                        containerColor = if (false) Color(0xFF1A1A1A) else MedicleanWhite,
                         labelColor = MedicleanDarkGreen
                     ),
                     border = null
@@ -575,10 +575,10 @@ fun MedicationCard(
                 .clickable { onEdit(medication) },
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White
+                containerColor = if (false) Color(0xFF1E2A28) else Color.White
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            border = if (isSystemInDarkTheme()) null else BorderStroke(1.dp, Color(0xFFE8ECEB))
+            border = if (false) null else BorderStroke(1.dp, Color(0xFFE8ECEB))
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(
@@ -771,7 +771,7 @@ fun ProfileSelectionOverlay(
                 .fillMaxWidth()
                 .clickable(enabled = false) {},
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-            color = if (isSystemInDarkTheme()) Color(0xFF121A18) else MedicleanWhite,
+            color = if (false) Color(0xFF121A18) else MedicleanWhite,
             tonalElevation = 8.dp
         ) {
             Column(modifier = Modifier.padding(24.dp)) {

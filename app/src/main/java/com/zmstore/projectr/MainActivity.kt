@@ -1,4 +1,4 @@
-package com.zmstore.projectr
+﻿package com.zmstore.projectr
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -238,7 +238,7 @@ class MainActivity : FragmentActivity() {
                                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                             ) {
                                 NavigationBar(
-                                    containerColor = if (isSystemInDarkTheme()) Color(0xFF17201F) else Color.White,
+                                    containerColor = if (false) Color(0xFF17201F) else Color.White,
                                     modifier = Modifier.height(80.dp),
                                     tonalElevation = 0.dp
                                 ) {

@@ -1,4 +1,4 @@
-package com.zmstore.projectr.data.model
+﻿package com.zmstore.projectr.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

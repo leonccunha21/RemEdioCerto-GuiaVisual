@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.medication
+﻿package com.zmstore.projectr.ui.medication
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -149,7 +149,7 @@ fun MedicationDetailScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = onBack,
-                            modifier = Modifier.padding(8.dp).background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
+                            modifier = Modifier.padding(8.dp).background(if (false) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
                         ) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanTeal)
                         }
@@ -169,7 +169,7 @@ fun MedicationDetailScreen(
                 // Shared Visual Header
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+                    color = if (false) Color(0xFF1E2A28) else Color.White,
                     shape = RoundedCornerShape(28.dp),
                     shadowElevation = 2.dp
                 ) {
@@ -254,7 +254,7 @@ fun MedicationDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else MedicleanMint.copy(alpha = 0.5f), RoundedCornerShape(24.dp))
+                        .background(if (false) Color.White.copy(alpha = 0.05f) else MedicleanMint.copy(alpha = 0.5f), RoundedCornerShape(24.dp))
                         .padding(16.dp)
                 ) {
                     Text("IDENTIDADE VISUAL", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Black, color = MedicleanTeal, letterSpacing = 1.sp)
@@ -332,7 +332,7 @@ fun MedicationDetailScreen(
                 // Scheduling Section
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.03f) else Color.White.copy(alpha = 0.7f),
+                    color = if (false) Color.White.copy(alpha = 0.03f) else Color.White.copy(alpha = 0.7f),
                     shape = RoundedCornerShape(24.dp),
                     border = BorderStroke(1.dp, MedicleanTeal.copy(alpha = 0.1f))
                 ) {
@@ -517,8 +517,8 @@ fun PremiumTextField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = MedicleanDarkGreen,
             unfocusedTextColor = MedicleanDarkGreen,
-            focusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
-            unfocusedContainerColor = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White,
+            focusedContainerColor = if (false) Color.White.copy(alpha = 0.05f) else Color.White,
+            unfocusedContainerColor = if (false) Color.White.copy(alpha = 0.05f) else Color.White,
             focusedBorderColor = MedicleanTeal,
             unfocusedBorderColor = Color.Transparent,
             cursorColor = MedicleanTeal
@@ -532,7 +532,7 @@ fun InputOptionButton(icon: androidx.compose.ui.graphics.vector.ImageVector, lab
         onClick = onClick, 
         modifier = modifier.height(60.dp), 
         shape = RoundedCornerShape(18.dp), 
-        color = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.05f) else Color.White, 
+        color = if (false) Color.White.copy(alpha = 0.05f) else Color.White, 
         border = BorderStroke(1.dp, color.copy(alpha = 0.2f))
     ) {
         Row(modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {

@@ -1,4 +1,4 @@
-package com.zmstore.projectr.ui.help
+﻿package com.zmstore.projectr.ui.help
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -38,7 +38,7 @@ fun HelpScreen(onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,
-                        modifier = Modifier.padding(8.dp).background(if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
+                        modifier = Modifier.padding(8.dp).background(if (false) Color.White.copy(alpha = 0.1f) else Color.White, RoundedCornerShape(12.dp)).size(40.dp)
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = MedicleanTeal)
                     }
@@ -99,7 +99,7 @@ fun HelpItemCard(title: String, description: String) {
         onClick = { expanded = !expanded },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        color = if (isSystemInDarkTheme()) Color(0xFF1E2A28) else Color.White,
+        color = if (false) Color(0xFF1E2A28) else Color.White,
         shadowElevation = if (expanded) 4.dp else 1.dp
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
