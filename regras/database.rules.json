@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "medications": {
+          ".indexOn": ["name", "nextDoseTime"]
+        },
+        "profiles": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        },
+        "history": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid",
+          ".indexOn": ["timestamp", "medicationId"]
+        }
+      }
+    },
+    "master_catalog": {
+      ".read": "auth != null",
+      ".write": "root.child('users').child(auth.uid).child('isAdmin').val() === true"
+    }
+  }
+}
